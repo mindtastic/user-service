@@ -23,10 +23,11 @@ Create a variable for the MongoDB connection string
 
     export MONGODB_URL="mongodb+srv://<username>:<password>@<url>/<db>?retryWrites=true&w=majority"
 
-### Get the MongoDB connection string:
+Get the MongoDB connection string
+
 After setting up the [MongoDB Atlas](https://www.mongodb.com/docs/atlas/getting-started/), click the "Connect" button for your cluster and select "Connect to your application". This will create the required connection string, and give further instructions about the required username and password parameters.
 
 # Start the service:
-To run without Docker:
+To run without Docker run the following command:
 
     uvicorn app.main:app --reload
