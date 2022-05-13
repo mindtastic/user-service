@@ -1,4 +1,4 @@
-import os
+""" import os
 from typing import Optional
 from fastapi import FastAPI, HTTPException
 import motor.motor_asyncio
@@ -77,3 +77,9 @@ async def show_user(id: str):
         return user
 
     raise HTTPException(status_code=404, detail=f"User {id} not found")
+ """
+
+import uvicorn
+
+if __name__ == "__main__":
+    uvicorn.run("user-service.app:app", host="0.0.0.0", port=8000, reload=True)
