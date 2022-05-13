@@ -9,8 +9,8 @@ class LanguageEnum(str, Enum):
 
 class UserSettingsSchema(BaseModel):
     userId : int = Field(..., description="The user id")
-    language: LanguageEnum = LanguageEnum.de
-    #more settings to be added here
+    language: LanguageEnum = LanguageEnum.de #Default value is "de"
+    #TODO more settings to be added here
     
     class Config:
         use_enum_values = True
