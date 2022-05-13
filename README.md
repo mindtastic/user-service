@@ -3,7 +3,7 @@ The user service for the mindtastic backend
 
 ## Requirements
 
-Python >= 3.8
+Python >= 3.9
 
 ## Setup
     pip install -r requirements.txt
