@@ -49,3 +49,19 @@ async def retrieve_user_settings(user_id: str):
         message="User settings could not be retrieved",
         status_code=500,
     )
+
+# Create PUT endpoint for updating user settings by user id - check if user settings exist
+#TODO check if this is needed
+#TODO add Unauthorized error
+@router.put("/{user_id}", response_model=ResponseModel, status_code=200, response_description="User settings updated")
+async def update_user_settings(user_id: str, user_settings: UpdateUserSettingsModel):
+    if user_settings := await update_user_settings_by_id(user_id, user_settings):
+        return ResponseModel(
+            message="User settings updated",
+            status_code=200,
+            data=user_settings,
+        )
+    return ErrorResponseModel(
+        message="User settings could not be updated",
+        status_code=500,
+    )
