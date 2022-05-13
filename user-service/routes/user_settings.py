@@ -65,3 +65,17 @@ async def update_user_settings(user_id: str, user_settings: UpdateUserSettingsMo
         message="User settings could not be updated",
         status_code=500,
     )
+
+# Create DELETE endpoint for deleting user settings by user id
+@router.delete("/{user_id}", response_model=ResponseModel, status_code=200, response_description="User settings deleted")
+async def delete_user_settings(user_id: str):
+    if user_settings := await delete_user_settings_by_id(user_id):
+        return ResponseModel(
+            message="User settings deleted",
+            status_code=200,
+            data=user_settings,
+        )
+    return ErrorResponseModel(
+        message="User settings could not be deleted",
+        status_code=500,
+    )
