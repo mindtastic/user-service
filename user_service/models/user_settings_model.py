@@ -35,17 +35,26 @@ class UpdateUserSettingsModel(BaseModel):
             }
         }
 
+""" #Create ResponseModel with optional data field
 def ResponseModel(data, message):
     return {
-        "data": [data],
+        "data": Optional[data],
         "code": 200,
-        "message": message
-    }
+        "message": Optional[message]
+    } """
 
+#Create Error response model for the error responses from endpoints
 def ErrorResponseModel(error, code, message):
     return {
         "error": error,
         "code": code,
         "message": message
     }
+    
+
+#Create Response model class for the response from the endpoints
+class ResponseModel(BaseModel):
+    data: Optional[dict]
+    code: int
+    message: Optional[str]
     
