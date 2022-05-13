@@ -1,20 +1,16 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Body, HTTPException, status
 from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 
 #import database functions from user-service/database.py
 from user_service.database import (
-    add_new_user_settings_by_id, 
-    retrieve_user_settings_by_id, 
-    update_user_settings_by_id, 
-    delete_user_settings_by_id,
+    user_settings_collection
 )
 
 #import schemas from user-service/models/user_settings_model.py
 from user_service.models.user_settings_model import (
     UserSettingsSchema,
     UpdateUserSettingsModel,
-    ResponseModel,
-    ErrorResponseModel,
 )
 
 #Create FastAPI router 
@@ -22,60 +18,41 @@ router = APIRouter()
 
 #Create POST endpoint for adding new user settings
 #TODO add Unauthorized error
-@router.post("/", response_model=ResponseModel, status_code=200, response_description="User settings created")
-async def add_new_user_settings(user_settings: UserSettingsSchema):
-    user_settings_data = jsonable_encoder(user_settings)
-    if await add_new_user_settings_by_id(user_settings_data["userId"], user_settings_data):
-        return ResponseModel(
-            message="User settings successfully added",
-            #status_code=200,
-        )
-    return ErrorResponseModel(
-        message="User settings could not be added",
-        status_code=500,
-    )
+@router.post("/", response_description="Add new user settings", response_model=UserSettingsSchema)
+async def add_new_user_settings(user_settings: UserSettingsSchema = Body(...)):
+    user_settings = jsonable_encoder(user_settings)
+    await user_settings_collection.insert_one(user_settings)
+    return JSONResponse(status.HTTP_200_OK) #add message
 
-# Create GET endpoint for retrieving user settings by user id
-#TODO add Unauthorized error    
-@router.get("/{user_id}", response_model=ResponseModel, status_code=200, response_description="User settings retrieved")
-async def retrieve_user_settings(user_id: int):
-    if user_settings := await retrieve_user_settings_by_id(user_id):
-        return ResponseModel(
-            message="User settings retrieved",
-            #status_code=200,
-            data=user_settings,
-        )
-    return ErrorResponseModel(
-        message="User settings could not be retrieved",
-        status_code=500,
-    )
 
-# Create PUT endpoint for updating user settings by user id - check if user settings exist
+# Create GET endpoint for retrieving user settings by user ID
+@router.get("/{user_id}", response_description="Retrieve user settings by user id", response_model=UserSettingsSchema)
+async def retrieve_user_settings_by_id(user_id: int):
+    user_settings = await user_settings_collection.find_one({"userId": user_id})
+    if user_settings:
+        #TODO return without the _id field
+        return user_settings 
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User settings not found")   
+
+# Create PUT endpoint for updating user settings by user ID
 #TODO check if this is needed
 #TODO add Unauthorized error
-@router.put("/{user_id}", response_model=ResponseModel, status_code=200, response_description="User settings updated")
-async def update_user_settings(user_id: int, user_settings: UpdateUserSettingsModel):
-    if user_settings := await update_user_settings_by_id(user_id, user_settings):
-        return ResponseModel(
-            message="User settings updated",
-            #status_code=200,
-            data=user_settings,
-        )
-    return ErrorResponseModel(
-        message="User settings could not be updated",
-        status_code=500,
+@router.put("/{user_id}", response_description="Update user settings by user id", response_model=UserSettingsSchema)
+async def update_user_settings_by_id(user_id: int, user_settings: UpdateUserSettingsModel):
+    user_settings = jsonable_encoder(user_settings)
+    updated_user_settings = await user_settings_collection.update_one(
+        {"userId": user_id}, {"$set": user_settings}
     )
+    if updated_user_settings:
+        return JSONResponse(status.HTTP_200_OK)
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User settings not found")
 
-# Create DELETE endpoint for deleting user settings by user id
-@router.delete("/{user_id}", response_model=ResponseModel, status_code=200, response_description="User settings deleted")
-async def delete_user_settings(user_id: int):
-    if user_settings := await delete_user_settings_by_id(user_id):
-        return ResponseModel(
-            message="User settings deleted",
-            #status_code=200,
-            data=user_settings,
-        )
-    return ErrorResponseModel(
-        message="User settings could not be deleted",
-        status_code=500,
-    )
+# Create DELETE endpoint for deleting user settings by user ID
+#TODO add Unauthorized error
+@router.delete("/{user_id}", response_description="Delete user settings by user id")
+async def delete_user_settings_by_id(user_id: int):
+    user_settings = await user_settings_collection.find_one({"userId": user_id})
+    if user_settings:
+        await user_settings_collection.delete_one({"userId": user_id})
+        return JSONResponse(status.HTTP_200_OK)
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User settings not found")
