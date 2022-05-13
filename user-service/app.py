@@ -1,23 +1,15 @@
 import os
 from fastapi import FastAPI, HTTPException
 import motor.motor_asyncio
+from routes.user_settings import router as UserSettingsRouter
 
-
+# Create FastAPI app
 app = FastAPI()
-client = motor.motor_asyncio.AsyncIOMotorClient(os.environ["MONGODB_URL"], tls=True, tlsAllowInvalidCertificates=True)
-db = client.user_service
 
+#Add User Settings router  
+app.include_router(UserSettingsRouter, prefix="/user-settings", tags=["User-Settings"])
 
-@app.get("/")
+#Create get endpoint for the root path
+@app.get("/", tags=["Root"])
 def read_root():
-    return {"Hello": "World"}
-
-
-@app.get(
-    "/{id}", response_description="Get a single user", response_model=UserModel
-)
-async def show_user(id: str):
-    if (user := await db["user"].find_one({"_id": id})) is not None:
-        return user
-
-    raise HTTPException(status_code=404, detail=f"User {id} not found")
+    return {"message": "Hello World"}
