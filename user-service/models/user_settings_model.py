@@ -8,7 +8,7 @@ class LanguageEnum(str, Enum):
 
 
 class UserSettingsSchema(BaseModel):
-    userId : str = Field(alias="_id")
+    userId : int = Field(..., description="The user id")
     language: LanguageEnum = LanguageEnum.de
     #more settings to be added here
     
@@ -16,7 +16,36 @@ class UserSettingsSchema(BaseModel):
         use_enum_values = True
         schema_extra = {
             "example": {
-                "userId": "5e8f8f8f8f8f8f8f8f8f8f8",
+                "userId": 1,
                 "language": "de"
             }
         }
+
+#TODO check if this is needed
+class UpdateUserSettingsModel(BaseModel):
+    userId : Optional[int] = Field(None, description="The user id")
+    language: Optional[LanguageEnum]
+    #more settings to be added here
+    
+    class Config:
+        use_enum_values = True
+        schema_extra = {
+            "example": {
+                "language": "de"
+            }
+        }
+
+def ResponseModel(data, message):
+    return {
+        "data": [data],
+        "code": 200,
+        "message": message
+    }
+
+def ErrorResponseModel(error, code, message):
+    return {
+        "error": error,
+        "code": code,
+        "message": message
+    }
+    
