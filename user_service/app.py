@@ -1,7 +1,5 @@
-import os
-from fastapi import FastAPI, HTTPException
-import motor.motor_asyncio
-from user-service.routes.user_settings import router as UserSettingsRouter
+from fastapi import FastAPI
+from user_service.routes.user_settings import router as UserSettingsRouter
 
 # Create FastAPI app
 app = FastAPI()
