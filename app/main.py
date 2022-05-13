@@ -73,7 +73,7 @@ def read_root():
     "/{id}", response_description="Get a single user", response_model=UserModel
 )
 async def show_user(id: str):
-    if (student := await db["user"].find_one({"_id": id})) is not None:
-        return student
+    if (user := await db["user"].find_one({"_id": id})) is not None:
+        return user
 
     raise HTTPException(status_code=404, detail=f"User {id} not found")
