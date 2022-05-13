@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from user_service.routes.user_settings import router as UserSettingsRouter
+from user_service.routes.user_settings_routes import router as UserSettingsRouter
 
 # Create FastAPI app
 app = FastAPI()

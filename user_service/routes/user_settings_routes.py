@@ -2,7 +2,7 @@ from fastapi import APIRouter, Body, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
-#import database functions from user-service/database.py
+#import user settings collection from user-service/database.py
 from user_service.database import (
     user_settings_collection
 )
