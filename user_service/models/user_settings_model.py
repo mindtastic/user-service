@@ -23,7 +23,7 @@ class PyObjectId(ObjectId):
         field_schema.update(type="integer")
 
 class UserSettingsSchema(BaseModel):
-    id : PyObjectId = Field(alias="_id", default_factory=PyObjectId)
+    id : PyObjectId = Field(alias="_id", default_factory=PyObjectId) #TODO check if this is needed - maybe remove
     userId : int = Field(...)
     language: LanguageEnum = LanguageEnum.de #Default value is "de"
     #TODO more settings to be added here
@@ -40,7 +40,7 @@ class UserSettingsSchema(BaseModel):
             }
         }
 
-#TODO check if this is needed
+#class needed for the update endpoint
 class UpdateUserSettingsModel(BaseModel):
     userId : int = Field(...)
     language: Optional[LanguageEnum]
