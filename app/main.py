@@ -1,5 +1,5 @@
 import os
-from typing import Optional
+from typing import List
 from fastapi import FastAPI, HTTPException
 import motor.motor_asyncio
 from pydantic import BaseModel, Field, EmailStr
@@ -64,13 +64,13 @@ class UserModel(BaseModel):
 
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
+@app.get("/", response_description="Get all users.", response_model=List[UserModel])
+async def list_all_users():
+    users = await db["users"].find().to_list(100)
+    return users
 
 @app.get(
-    "/{id}", response_description="Get a single user", response_model=UserModel
+    "/{id}", response_description="Read user by id.", response_model=UserModel
 )
 async def show_user(id: str):
     if (user := await db["user"].find_one({"_id": id})) is not None:
