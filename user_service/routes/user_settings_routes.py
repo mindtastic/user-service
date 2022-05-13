@@ -25,7 +25,6 @@ async def add_new_user_settings(user_settings: UserSettingsSchema = Body(...)):
     await user_settings_collection.insert_one(user_settings)
     return JSONResponse(status_code=status.HTTP_200_OK, detail="User settings created")
 
-
 # Create GET endpoint for retrieving user settings by user ID
 # TODO add Unauthorized error
 @router.get("/{userId}/settings", response_description="Retrieve user settings by user id", response_model=UserSettingsResponse)
