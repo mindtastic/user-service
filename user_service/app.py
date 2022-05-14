@@ -5,7 +5,7 @@ from user_service.routes.user_settings_routes import router as UserSettingsRoute
 app = FastAPI()
 
 #Add User Settings router  
-app.include_router(UserSettingsRouter, prefix="/user-settings", tags=["User-Settings"])
+app.include_router(UserSettingsRouter, prefix="/user", tags=["User-Settings"])
 
 #Create get endpoint for the root path
 @app.get("/", tags=["Root"])
