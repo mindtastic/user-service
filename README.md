@@ -35,3 +35,8 @@ VS Code extension for MongoDB and MongoDB Compass can used to connect, and acces
 To run without Docker run the following command:
 
     python -m user_service.main
+
+# Test the endpoints:
+To test the endpoints, run the following command (After installing pytest):
+
+    pytest
