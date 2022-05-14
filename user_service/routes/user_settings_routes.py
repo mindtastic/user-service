@@ -11,6 +11,7 @@ from user_service.database import (
 from user_service.models.user_settings_model import (
     UserSettingsSchema,
     UpdateUserSettingsModel,
+    UserSettingsResponse
 )
 
 #Create FastAPI router 
@@ -26,16 +27,15 @@ async def add_new_user_settings(user_settings: UserSettingsSchema = Body(...)):
 
 
 # Create GET endpoint for retrieving user settings by user ID
-@router.get("/{userId}/settings", response_description="Retrieve user settings by user id", response_model=UserSettingsSchema)
+# TODO add Unauthorized error
+@router.get("/{userId}/settings", response_description="Retrieve user settings by user id", response_model=UserSettingsResponse)
 async def retrieve_user_settings_by_id(userId: int):
     user_settings = await user_settings_collection.find_one({"userId": userId})
     if user_settings:
-        #TODO return without the _id field
-        return user_settings 
+        return user_settings
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User settings not found")   
 
 # Create PUT endpoint for updating user settings by user ID
-#TODO check if this is needed
 #TODO add Unauthorized error
 @router.put("/{userId}/settings", response_description="Update user settings by user id", response_model=UserSettingsSchema)
 async def update_user_settings_by_id(userId: int, user_settings: UpdateUserSettingsModel):
