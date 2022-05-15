@@ -11,7 +11,7 @@ COPY ./requirements.txt /code/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 # Copies app folder into working directory
-COPY ./app /code/app
+COPY ./user_service /code/user_service
 
 # Start API
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["python", "-m", "user_service.main"]
