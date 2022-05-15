@@ -11,14 +11,15 @@ from user_service.database import (
 #import schemas from user-service/models/user_model.py
 from user_service.models.user_model import (
     UserModel,
-    UpdateUserModel
+    UpdateUserModel,
+    UserModelResponse
 )
 
 #Create FastAPI router 
 router = APIRouter()
 
 @router.get(
-  "/", response_description="Get all users.", response_model=List[UserModel]
+  "/", response_description="Get all users.", response_model=List[UserModelResponse]
 )
 async def show_all_users():
   users = []
@@ -26,14 +27,14 @@ async def show_all_users():
       users.append(user)
   return users
 
-@router.post("/{userId}", response_description="Add new user settings", response_model=UserModel)
+@router.post("/", response_description="Add new user settings", response_model=UserModelResponse)
 async def add_new_user(user: UserModel = Body(...)):
     user = jsonable_encoder(user)
     await users_collection.insert_one(user)
     return JSONResponse(status_code=status.HTTP_200_OK, detail="User created")
 
 @router.get(
-    "/{userId}", response_description="Read user by id.", response_model=UserModel
+    "/{userId}", response_description="Read user by id.", response_model=UserModelResponse
 )
 async def show_user(userId: int):
   if (user := await users_collection.find_one({"userId": userId})) is not None:
@@ -42,7 +43,7 @@ async def show_user(userId: int):
   raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User {id} not found")
 
 @router.put(
-  "/{userId}", response_description="Update user by id.", response_model=UpdateUserModel
+  "/{userId}", response_description="Update user by id.", response_model=UserModelResponse
 )
 async def update_user(userId: int, user_data: UpdateUserModel = Body(...)):
   user_data = jsonable_encoder(user_data)

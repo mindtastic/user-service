@@ -56,6 +56,31 @@ class UserModel(BaseModel):
             }
         }
 
+class UserModelResponse(BaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    username: str = Field(...)
+    email: EmailStr = Field(...)
+    role: RoleEnum = RoleEnum.user
+    lang: LanguageEnum = LanguageEnum.de
+    created: datetime = Field(...)
+    changed: datetime = Field(...)
+
+
+    class Config:
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+        schema_extra = {
+            "example": {
+                "username": "maja",
+                "email": "maja@majassen.de",
+                "role": "user",
+                "lang": "de",
+                "created": "2022-03-07T14:15:44+00:00",
+                "changed": "2022-03-07T14:15:44+00:00",
+            }
+        }
+
 class UpdateUserModel(BaseModel):
   username: Optional[str]
   email: Optional[EmailStr]
