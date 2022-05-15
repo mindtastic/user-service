@@ -57,7 +57,7 @@ class UpdateUserSettingsModel(BaseModel):
             }
         }
 
-# creata response model for the get endpoint
+# create response model for the get endpoint
 class UserSettingsResponse(BaseModel):
     userId : int = Field(...)
     language: LanguageEnum = LanguageEnum.de #Default value is "de"
