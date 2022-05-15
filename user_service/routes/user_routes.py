@@ -27,7 +27,9 @@ async def show_all_users():
       users.append(user)
   return users
 
-@router.post("/", response_description="Add new user settings", response_model=UserModelResponse)
+@router.post(
+  "/", response_description="Add new user", response_model=UserModelResponse
+)
 async def add_new_user(user: UserModel = Body(...)):
     user = jsonable_encoder(user)
     await users_collection.insert_one(user)
