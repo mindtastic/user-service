@@ -1,7 +1,4 @@
-import os
-from typing import List
-from fastapi import FastAPI, HTTPException
-import motor.motor_asyncio
+from typing import Optional
 from pydantic import BaseModel, Field, EmailStr
 from enum import Enum
 from datetime import datetime
@@ -58,3 +55,24 @@ class UserModel(BaseModel):
                 "changed": "2022-03-07T14:15:44+00:00",
             }
         }
+
+class UpdateUserModel(BaseModel):
+  username: Optional[str]
+  email: Optional[EmailStr]
+  password: Optional[str]
+  role: Optional[RoleEnum]
+  lang: Optional[LanguageEnum]
+  changed: Optional[datetime]
+
+  class Config:
+    schema_extra = {
+      "example": {
+        "username": "string",
+        "email": "user@example.com",
+        "password": "string",
+        "role": "admin",
+        "lang": "de",
+        "created": "2022-05-15T14:31:37.956Z",
+        "changed": "2022-05-15T14:31:37.956Z"
+      }
+    }
