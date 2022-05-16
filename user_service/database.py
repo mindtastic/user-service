@@ -4,7 +4,8 @@ MONGO_DETAILS = "mongodb://localhost:27017" # MongoDB details for local testing 
 
 client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
 
-database = client.user_settings # create new database called user_settings
+database = client.users # create new database called users
 
-user_settings_collection = database.get_collection("user_settings_collection") # create and get a collection called user_settings_collection
-
+# create and get collections (akin to tables)
+user_settings_collection = database.get_collection("user_settings_collection")
+users_collection = database.get_collection("users_collection")
