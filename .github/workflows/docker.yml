@@ -27,4 +27,4 @@ jobs:
 
       - name: Push image
         run: |
-          docker push $GITHUB_REPOSITORY:$GITHUB_SHA
+          docker push ghcr.io/$GITHUB_REPOSITORY:$GITHUB_SHA
