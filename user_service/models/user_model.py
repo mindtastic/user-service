@@ -1,7 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel, Field, EmailStr
 from enum import Enum
-from datetime import datetime
 from bson import ObjectId #check bson
 
 
@@ -18,7 +17,6 @@ class UserModel(BaseModel):
     id: str = Field(...)
     username: str = Field(...)
     email: EmailStr = Field(...)
-    password: str = Field(...)
     role: RoleEnum = RoleEnum.user
     lang: LanguageEnum = LanguageEnum.de
 
@@ -31,7 +29,6 @@ class UserModel(BaseModel):
             "example": {
                 "username": "maja",
                 "email": "maja@majassen.de",
-                "password": "ahcezie2aiKoon0yaequ3eive7uphie9",
                 "role": "user",
                 "lang": "de",
             }
@@ -61,7 +58,6 @@ class UserModelResponse(BaseModel):
 class UpdateUserModel(BaseModel):
   username: Optional[str]
   email: Optional[EmailStr]
-  password: Optional[str]
   role: Optional[RoleEnum]
   lang: Optional[LanguageEnum]
 
@@ -70,7 +66,6 @@ class UpdateUserModel(BaseModel):
       "example": {
         "username": "string",
         "email": "user@example.com",
-        "password": "string",
         "role": "admin",
         "lang": "de",
       }
