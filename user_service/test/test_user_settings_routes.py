@@ -5,8 +5,6 @@ from mongoengine import connect, disconnect
 from unittest import TestCase
 import json
 
-#pytest user_service/test/test_user_settings_routes.py --disable-pytest-warnings
-
 #create test mongodb client
 client = TestClient(app)
 
@@ -14,7 +12,6 @@ user_settings_data = {
   "userId": 1,
   "language": "de"
 }
-
 
 #testing class
 class TestUserSettingsRoutes(TestCase):
@@ -45,6 +42,7 @@ class TestUserSettingsRoutes(TestCase):
         assert response.status_code == 200
 
     #test get /user/{id} endpoint to check if it's deleted
+    #TODO: fails, needs to be fixed -> returns 200
     def test_get_user_settings_by_id_after_delete(self):
         response = client.get("user/1/settings")
         assert response.status_code == 404
