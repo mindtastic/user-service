@@ -32,7 +32,7 @@ async def retrieve_user_settings_by_id(userId: int):
 async def add_new_user_settings(user_settings: UserSettingsSchema = Body(...)):
     user_settings = jsonable_encoder(user_settings)
     await user_settings_collection.insert_one(user_settings)
-    return JSONResponse(status_code=status.HTTP_200_OK, detail="User settings created")
+    return JSONResponse(status_code=status.HTTP_200_OK)
 
 # Create DELETE endpoint for deleting user settings by user ID
 #TODO add Unauthorized error
