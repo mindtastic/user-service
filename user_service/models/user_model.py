@@ -10,7 +10,7 @@ class RoleEnum(str, Enum):
 
 # (...) for required fields
 class UserModel(BaseModel):
-    id: str = Field(...)
+    userId: str = Field(...)
     username: str = Field(...)
     email: EmailStr = Field(...)
     role: RoleEnum = RoleEnum.user
@@ -22,6 +22,7 @@ class UserModel(BaseModel):
         json_encoders = {ObjectId: str}
         schema_extra = {
             "example": {
+                "userId": "1",
                 "username": "maja",
                 "email": "maja@majassen.de",
                 "role": "user",
@@ -29,7 +30,7 @@ class UserModel(BaseModel):
         }
 
 class UserModelResponse(BaseModel):
-    id: str = Field(...)
+    userId: str = Field(...)
     username: str = Field(...)
     email: EmailStr = Field(...)
     role: RoleEnum = RoleEnum.user
@@ -40,6 +41,7 @@ class UserModelResponse(BaseModel):
         json_encoders = {ObjectId: str}
         schema_extra = {
             "example": {
+                "userId": "1",
                 "username": "maja",
                 "email": "maja@majassen.de",
                 "role": "user",
@@ -53,9 +55,9 @@ class UpdateUserModel(BaseModel):
 
     class Config:
         schema_extra = {
-          "example": {
-            "username": "string",
-            "email": "user@example.com",
-            "role": "admin",
-          }
+            "example": {
+                "username": "string",
+                "email": "user@example.com",
+                "role": "admin",
+            }
         }
