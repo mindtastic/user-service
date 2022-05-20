@@ -17,7 +17,7 @@ from user_service.models.user_model import (
     UserModelResponse,
 )
 
-#Create FastAPI router 
+#Create FastAPI router
 router = APIRouter()
 
 @router.get(

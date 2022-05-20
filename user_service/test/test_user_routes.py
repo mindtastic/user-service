@@ -39,6 +39,7 @@ def test_create_user_with_invalid_data():
     assert response.status_code == 422
 
 # # test get /user endpoint
+# TODO fix tests once test db is used
 # def test_get_all_users():
 #     response = client.get("user/")
 #     assert response.status_code == 200
@@ -61,3 +62,7 @@ def test_update_user_with_valid_input():
 def test_update_user_with_invalid_input():
     response = client.put("user/1", json.dumps({"role": "clown"}))
     assert response.status_code == 422
+
+def test_delete_user():
+    response = client.delete("user/1")
+    assert response.status_code == 200
