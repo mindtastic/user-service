@@ -11,10 +11,10 @@ from user_service.database import (
 #import schemas from user-service/models/user_settings_model.py
 from user_service.models.user_settings_model import (
     UserSettingsSchema,
-    UserSettingsResponse
+    UserSettingsResponse,
 )
 
-#Create FastAPI router 
+#Create FastAPI router
 router = APIRouter()
 
 # Create GET endpoint for user settings by user id
