@@ -1,9 +1,10 @@
 from http import client
-from fastapi.testclient import TestClient
-from user_service.app import app
-from mongoengine import connect, disconnect
 from unittest import TestCase
 import json
+from mongoengine import connect, disconnect
+from fastapi.testclient import TestClient
+from user_service.app import app
+
 
 #create test mongodb client
 client = TestClient(app)
