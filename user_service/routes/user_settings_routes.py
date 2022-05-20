@@ -71,7 +71,12 @@ async def delete_user_settings(user_id: int):
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     
-    #delete user settings
+    #check if user settings exists
+    user_settings = await user_settings_collection.find_one({"userId": user_id})
+    if user_settings is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User settings not found")
+
+    #otherwise delete user settings
     await user_settings_collection.delete_one({"userId": user_id})
     return JSONResponse(status_code=status.HTTP_200_OK)
 
