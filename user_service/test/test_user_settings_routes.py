@@ -52,3 +52,4 @@ def test_get_user_settings_by_id_for_non_existing_user():
 def test_delete_user_settings_for_non_existing_user():
     response = client.delete("user/3/settings")
     assert response.status_code == 404
+    
