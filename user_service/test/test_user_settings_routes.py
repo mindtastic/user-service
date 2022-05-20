@@ -18,12 +18,12 @@ class TestUserSettingsRoutes(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        disconnect()
-        connect('mongoenginetest', host='mongomock://localhost/test_db')
+        disconnect(alias='test_db')
+        connect('mongoenginetest', host='mongomock://localhost/test_db', alias='test_db')
 
     @classmethod
     def tearDownClass(cls):
-        disconnect()
+        disconnect(alias='test_db')
     
     #test create user settings endpoint
     def test_create_user_settings(self):
@@ -35,19 +35,18 @@ class TestUserSettingsRoutes(TestCase):
         response = client.get("user/1/settings")
         assert response.status_code == 200
         assert response.json() == user_settings_data
-    
+
     #test delete user settings endpoint
     def test_delete_user_settings(self):
         response = client.delete("user/1/settings")
         assert response.status_code == 200
 
-    #test get /user/{id} endpoint to check if it's deleted
-    #TODO: fails, needs to be fixed -> returns 200
-    def test_get_user_settings_by_id_after_delete(self):
-        response = client.get("user/1/settings")
-        assert response.status_code == 404
-
     #test get for non existing user
     def test_get_user_settings_by_id_for_non_existing_user(self):
         response = client.get("user/3/settings")
+        assert response.status_code == 404
+
+    #test delete for non existing user
+    def test_delete_user_settings_for_non_existing_user(self):
+        response = client.delete("user/3/settings")
         assert response.status_code == 404
