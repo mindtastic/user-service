@@ -12,6 +12,18 @@ user_settings_data = {
   "language": "de",
 }
 
+USERDATA = {
+    "userId": "1",
+    "username": "usersettingtest",
+    "email": "usersettingtest@usersettingtest.com",
+    "role": "admin",
+}
+
+#create test user for other tests
+def test_create_user():
+    response = client.post("user/", json.dumps(USERDATA, default=str))
+    assert response.status_code == 200
+
 #test create user settings endpoint
 def test_create_user_settings():
     response = client.post("user/1/settings", json.dumps(user_settings_data))
@@ -52,4 +64,8 @@ def test_get_user_settings_by_id_for_non_existing_user():
 def test_delete_user_settings_for_non_existing_user():
     response = client.delete("user/3/settings")
     assert response.status_code == 404
-    
+
+#delete test user
+def test_delete_user():
+    response = client.delete("user/1")
+    assert response.status_code == 200
