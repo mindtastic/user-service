@@ -25,6 +25,12 @@ INVALID_USERDATA = {
     "role": "clown",
 }
 
+#test get users before creating
+def test_get_all_users_before_creating():
+    response = client.get("user/")
+    assert response.status_code == 200
+    assert response.json() == []
+
 # test create user endpoint
 def test_create_user():
     response = client.post("user/", json.dumps(USERDATA, default=str))
@@ -39,11 +45,10 @@ def test_create_user_with_invalid_data():
     assert response.status_code == 422
 
 # # test get /user endpoint
-# TODO fix tests once test db is used
-# def test_get_all_users():
-#     response = client.get("user/")
-#     assert response.status_code == 200
-#     assert response.json() == [USERDATA]
+def test_get_all_users():
+    response = client.get("user/")
+    assert response.status_code == 200
+    assert response.json() == [USERDATA]
 
 # test get /user/{id} enpoint
 def test_get_not_existing_user_by_id():
