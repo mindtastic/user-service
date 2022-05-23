@@ -8,15 +8,17 @@ Python >= 3.9
 ## Setup
     pip install -r requirements.txt
 
+## Running without database:
+
 Build Docker image
 
     docker build -t testimage .
 
 Start Docker container
 
-    docker run -d --name testcontainer -p 80:80 testimage
+    docker run -d --name testcontainer -p 8000:8000 testimage
 
-Show "Hello World" under `0.0.0.0:80`
+Show "Hello World" under `0.0.0.0:8000`
 
 ## Configure the location of your cloud MongoDB database:
 Create a variable for the MongoDB connection string
