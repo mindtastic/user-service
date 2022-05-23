@@ -13,4 +13,4 @@ jobs:
           token: ${{ secrets.ACTIONS_PAT }}
           project-location: 'mindtastic'
           project-name: 'mindtastic Main Board'
-          column-name: 'To Do'
+          column-name: 'To do'
