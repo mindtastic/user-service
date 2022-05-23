@@ -11,6 +11,6 @@ jobs:
         uses: peter-evans/create-or-update-project-card@v2
         with:
           token: ${{ secrets.ACTIONS_PAT }}
-          project-location: mindtastic
-          project-name: mindtastic Main Board
-          column-name: To Do
+          project-location: 'mindtastic'
+          project-name: 'mindtastic Main Board'
+          column-name: 'To Do'
