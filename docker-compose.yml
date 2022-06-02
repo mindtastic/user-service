@@ -9,8 +9,7 @@ services:
       - MONGO_INITDB_DATABASE=user-service
     ports:
       - 27017:27017
-    volumes:
-      - ~/apps/mongo:/data/db
+
   app:
     build:
       dockerfile: Dockerfile
