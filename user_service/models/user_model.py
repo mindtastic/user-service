@@ -1,6 +1,7 @@
 from typing import Optional
 from enum import Enum
-from pydantic import BaseModel, Field, EmailStr
+from uuid import UUID, uuid4
+from pydantic import BaseModel, Field
 from bson import ObjectId #check bson
 
 
@@ -10,9 +11,8 @@ class RoleEnum(str, Enum):
 
 # (...) for required fields
 class UserModel(BaseModel):
-    userId: str = Field(...)
-    username: str = Field(...)
-    email: EmailStr = Field(...)
+    user_id: UUID = Field(...)
+    username: Optional[str]
     role: RoleEnum = RoleEnum.user
 
 
@@ -22,18 +22,15 @@ class UserModel(BaseModel):
         json_encoders = {ObjectId: str}
         schema_extra = {
             "example": {
-                "userId": "1",
+                "user_id": "123e4567-e89b-12d3-a456-426655440000",
                 "username": "maja",
-                "email": "maja@majassen.de",
                 "role": "user",
             }
         }
 
 class UserModelResponse(BaseModel):
-    userId: str = Field(...)
-    username: str = Field(...)
-    email: EmailStr = Field(...)
-    role: RoleEnum = RoleEnum.user
+    username: Optional[str]
+    role: Optional[RoleEnum]
 
     class Config:
         allow_population_by_field_name = True
@@ -41,22 +38,18 @@ class UserModelResponse(BaseModel):
         json_encoders = {ObjectId: str}
         schema_extra = {
             "example": {
-                "userId": "1",
                 "username": "maja",
-                "email": "maja@majassen.de",
                 "role": "user",
             }
         }
 
 class UpdateUserModel(BaseModel):
     username: Optional[str]
-    email: Optional[EmailStr]
     role: Optional[RoleEnum]
 
     class Config:
         schema_extra = {
             "example": {
-                "username": "string",
                 "email": "user@example.com",
                 "role": "admin",
             }
