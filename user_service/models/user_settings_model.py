@@ -1,4 +1,5 @@
 from enum import Enum
+import uuid
 from pydantic import BaseModel, Field
 from bson import ObjectId
 
@@ -8,7 +9,7 @@ class LanguageEnum(str, Enum):
 
 
 class UserSettingsSchema(BaseModel):
-    userId : int = Field(...)
+    account_key : uuid = Field(...)
     language: LanguageEnum = LanguageEnum.de #Default value is "de"
     #TODO more settings to be added here
 
@@ -19,14 +20,13 @@ class UserSettingsSchema(BaseModel):
         json_encoders = {ObjectId: str}
         schema_extra = {
             "example": {
-                "userId": 1,
+                "userId": "123e4567-e89b-12d3-a456-426655440000",
                 "language": "de"
             }
         }
 
 # create response model for the get endpoint
 class UserSettingsResponse(BaseModel):
-    userId : int = Field(...)
     language: LanguageEnum = LanguageEnum.de #Default value is "de"
     #TODO more settings to be added here
 
@@ -37,7 +37,6 @@ class UserSettingsResponse(BaseModel):
         json_encoders = {ObjectId: str}
         schema_extra = {
             "example": {
-                "userId": 1,
                 "language": "de"
             }
         }
