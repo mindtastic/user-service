@@ -11,7 +11,7 @@ class RoleEnum(str, Enum):
 
 # (...) for required fields
 class UserModel(BaseModel):
-    account_key: uuid = Field(...)
+    user_id: uuid = Field(...)
     username: str = Field(...)
     role: RoleEnum = RoleEnum.user
 
@@ -22,7 +22,7 @@ class UserModel(BaseModel):
         json_encoders = {ObjectId: str}
         schema_extra = {
             "example": {
-                "account_key": "123e4567-e89b-12d3-a456-426655440000",
+                "user_id": "123e4567-e89b-12d3-a456-426655440000",
                 "username": "maja",
                 "role": "user",
             }

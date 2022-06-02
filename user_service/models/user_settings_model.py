@@ -9,7 +9,7 @@ class LanguageEnum(str, Enum):
 
 
 class UserSettingsSchema(BaseModel):
-    account_key : uuid = Field(...)
+    user_id : uuid = Field(...)
     language: LanguageEnum = LanguageEnum.de #Default value is "de"
     #TODO more settings to be added here
 
