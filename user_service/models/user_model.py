@@ -1,6 +1,6 @@
 from typing import Optional
 from enum import Enum
-import uuid
+from uuid import UUID, uuid4
 from pydantic import BaseModel, Field
 from bson import ObjectId #check bson
 
@@ -11,8 +11,8 @@ class RoleEnum(str, Enum):
 
 # (...) for required fields
 class UserModel(BaseModel):
-    user_id: uuid = Field(...)
-    username: str = Field(...)
+    user_id: UUID = Field(...)
+    username: Optional[str]
     role: RoleEnum = RoleEnum.user
 
 
@@ -29,8 +29,8 @@ class UserModel(BaseModel):
         }
 
 class UserModelResponse(BaseModel):
-    username: str = Field(...)
-    role: RoleEnum = RoleEnum.user
+    username: Optional[str]
+    role: Optional[RoleEnum]
 
     class Config:
         allow_population_by_field_name = True

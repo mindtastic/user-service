@@ -1,7 +1,7 @@
-import uuid
 from fastapi import APIRouter, HTTPException, status, Body
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
+from jsonschema import ValidationError
 
 #import user settings collection from user-service/database.py
 from user_service.database import (
@@ -25,12 +25,12 @@ router = APIRouter()
     response_model=UserSettingsResponse,
     status_code=status.HTTP_200_OK
 )
-async def get_user_settings_by_id(user_id: uuid):
+async def get_user_settings_by_id(user_id: str):
     """
     Get user settings by user id
     """
     #check if user exists
-    user = await users_collection.find_one({"user_id": uuid(user_id)})
+    user = await users_collection.find_one({"user_id": user_id})
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -55,35 +55,34 @@ async def get_user_settings_by_id(user_id: uuid):
     response_description="Add user settings by user id",
     response_model=UserSettingsResponse
 )
-async def create_user_settings(user_id: uuid, user_settings: UserSettingsSchema = Body(...)):
+async def create_user_settings(user_id: str, user_settings: UserSettingsSchema = Body(...)):
     """
     Add user settings by user id
     """
     #check if user exists
     user = await users_collection.find_one({"user_id": user_id})
+    print(user_id)
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"User {user_id} not found"
         )
 
-    #check that user settings do not exist
-    user_settings_exists = await user_settings_collection.find_one({"user_id": user_id})
-    if user_settings_exists is not None:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="User settings already exists"
-        )
-
-    user_settings = jsonable_encoder(user_settings)
-    await user_settings_collection.insert_one(user_settings)
-    return JSONResponse(status_code=status.HTTP_200_OK)
+    try:
+        user_settings = jsonable_encoder(user_settings)
+        await user_settings_collection.insert_one(user_settings)
+        return JSONResponse(status_code=status.HTTP_200_OK)
+    except ValidationError as error:
+        return HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail= error,
+    )
 
 
 # Create DELETE endpoint for deleting user settings by user id
 # TODO add Unauthorized error
 @router.delete("/{user_id}/settings", response_description="Delete user settings by user id")
-async def delete_user_settings(user_id: uuid):
+async def delete_user_settings(user_id: str):
     """
     Delete user settings by user id
     """
