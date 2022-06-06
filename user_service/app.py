@@ -19,4 +19,4 @@ def read_root():
 #Create get endpoint for the health check
 @app.get("/health")
 def health_check():
-    status.HTTP_200_OK
+    return status.HTTP_200_OK
