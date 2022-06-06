@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 from user_service.routes.user_settings_routes import router as UserSettingsRouter
 from user_service.routes.user_routes import router as UsersRouter
 
@@ -15,3 +15,8 @@ app.include_router(UsersRouter, prefix=PREFIX, tags=["Users"])
 @app.get("/", tags=["Root"])
 def read_root():
     return {"message": "Hello World"}
+
+#Create get endpoint for the health check
+@app.get("/health")
+def health_check():
+    status.HTTP_200_OK
