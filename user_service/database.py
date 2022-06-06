@@ -11,10 +11,14 @@ uri = "mongodb://%s:%s@%s" % (quote_plus(user), quote_plus(password), databaseHo
 #add try except block to handle if the database is not available
 try:
     client = motor.motor_asyncio.AsyncIOMotorClient(uri)
-    db = client.user_service
+    database = client.users # create new database called users
     print("Connected to MongoDB")
 except Exception as e:
-    print("Could not connect to MongoDB: %s" % e)
+    # raise configuration error
+    print("Error connecting to MongoDB: %s" % e)
+    raise e
+
+
 
 database = client.users # create new database called users
 
