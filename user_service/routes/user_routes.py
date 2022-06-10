@@ -8,6 +8,7 @@ from jsonschema import ValidationError
 #import user settings collection from user-service/database.py
 from user_service.database import (
     users_collection,
+    user_settings_collection
 )
 
 #import schemas from user-service/models/user_model.py
@@ -98,6 +99,8 @@ async def delete_user(user_id: str):
     user = await users_collection.find_one({"user_id": user_id})
     if user:
         await users_collection.delete_one({"user_id": user_id})
+        #delete user settings
+        await user_settings_collection.delete_one({"user_id": user_id})
         return JSONResponse(status.HTTP_200_OK)
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,

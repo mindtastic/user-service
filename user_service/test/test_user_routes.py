@@ -17,6 +17,11 @@ INVALID_USERDATA = {
     "role": "clown",
 }
 
+USER_SETTINGS_DATA = {
+  "user_id": "123e4567-e89b-12d3-a456-426655440000",
+  "language": "de",
+}
+
 def test_get_all_users_before_creating():
     ''' test get users before creating '''
     response = client.get("user/")
@@ -49,6 +54,10 @@ def test_get_not_existing_user_by_id():
 
 def test_get_user_by_id():
     '''test returning a user by id'''
+    client.post(
+      "user/123e4567-e89b-12d3-a456-426655440000/settings",
+      json.dumps(USER_SETTINGS_DATA)
+    )
     response = client.get("user/123e4567-e89b-12d3-a456-426655440000")
     assert response.status_code == 200
 
@@ -72,3 +81,8 @@ def test_delete_user():
     '''test deleting user endpoint'''
     response = client.delete("user/123e4567-e89b-12d3-a456-426655440000")
     assert response.status_code == 200
+
+def test_deleted_user_settings():
+    '''test whether deleted user's settings remain'''
+    response = client.get("user/123e4567-e89b-12d3-a456-426655440000/settings")
+    assert response.status_code == 404
