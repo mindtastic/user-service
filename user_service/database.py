@@ -6,7 +6,8 @@ MONGO_DETAILS = "mongodb://localhost:27017" # MongoDB details for local testing 
 user = os.getenv('MONGO_INITDB_ROOT_USERNAME', "")
 password = os.getenv('MONGO_INITDB_PASSWORD',  "")
 databaseHost = os.getenv('MONGODB_HOST', "")
-uri = "mongodb://%s:%s@%s" % (quote_plus(user), quote_plus(password), databaseHost)
+#uri = "mongodb://%s:%s@%s" % (quote_plus(user), quote_plus(password), databaseHost)
+uri = os.getenv("CONNECTION_STRING")
 
 #add try except block to handle if the database is not available
 try:
