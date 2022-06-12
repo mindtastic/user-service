@@ -3,10 +3,6 @@ import motor.motor_asyncio
 from urllib.parse import quote_plus
 
 MONGO_DETAILS = "mongodb://localhost:27017" # MongoDB details for local testing database
-# user = os.getenv('MONGO_INITDB_ROOT_USERNAME', "")
-# password = os.getenv('MONGO_INITDB_PASSWORD',  "")
-# databaseHost = os.getenv('MONGODB_HOST', "")
-#uri = "mongodb://%s:%s@%s" % (quote_plus(user), quote_plus(password), databaseHost)
 uri = os.getenv("CONNECTION_STRING")
 
 #add try except block to handle if the connection string is not set
