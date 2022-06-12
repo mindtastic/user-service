@@ -14,10 +14,10 @@ try:
     #check if the env variables are empty, if they are, use the local database
     if uri == None:
         client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
-        print("Using local database")
+        print("Connected to localhost:27017")
     else:
         client = motor.motor_asyncio.AsyncIOMotorClient(uri)    
-        print("Connected to MongoDB database using connection string")
+        print("Connected to MongoDB database using env connection string")
 except Exception as e:
     # raise configuration error
     print("Error connecting to MongoDB: %s" % e)
