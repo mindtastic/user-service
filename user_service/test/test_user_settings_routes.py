@@ -19,7 +19,7 @@ USERDATA = {
 }
 
 def test_create_user():
-    response = client.post("user/", json.dumps(USERDATA, default=str))
+    response = client.post("user/", headers={"X-User-Id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900"}, json = json.dumps(USERDATA, default=str))
     assert response.status_code == 201
 
 def test_create_user_settings():
