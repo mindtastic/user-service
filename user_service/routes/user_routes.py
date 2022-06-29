@@ -40,11 +40,14 @@ async def show_all_users():
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
 )
-async def add_new_user(user: UserModel = Body(...)):
+async def add_new_user(x_user_id: Union[str, None] = Header(default=None), user_data: UserModel = Body(...)):
     '''Creates a new user record'''
-    user = jsonable_encoder(user)
+    user_data = jsonable_encoder(user_data)
+    #adds X-User-Id to user
+    user_data["user_id"] = x_user_id
+
     try:
-        await users_collection.insert_one(user)
+        await users_collection.insert_one(user_data)
     except ValidationError as error:
         logging.error("Error: %s", error)
         return HTTPException(

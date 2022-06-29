@@ -1,7 +1,7 @@
 from typing import Optional
 from enum import Enum
 from uuid import UUID, uuid4
-from pydantic import BaseModel, Field, Header
+from pydantic import BaseModel, Field
 from bson import ObjectId #check bson
 
 
@@ -11,8 +11,7 @@ class RoleEnum(str, Enum):
 
 # (...) for required fields
 class UserModel(BaseModel):
-    #Get user_id from header
-    user_id: UUID = Header(default=None)
+    user_id: UUID = Field()
     username: Optional[str]
     role: RoleEnum = RoleEnum.user
 
@@ -23,7 +22,6 @@ class UserModel(BaseModel):
         json_encoders = {ObjectId: str}
         schema_extra = {
             "example": {
-                "user_id": "123e4567-e89b-12d3-a456-426655440000",
                 "username": "maja",
                 "role": "user",
             }
