@@ -10,6 +10,4 @@ def test_root():
     assert response.status_code == 200
     assert response.json() == {"message": "Hello World"}
 
-#TODO test all endpoints
-
 #run tests with pytest, after "pip install pytest" and "pip install requests"

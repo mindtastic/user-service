@@ -6,68 +6,83 @@ from user_service.app import app
 client = TestClient(app) #create test client
 
 USERDATA = {
-    "userId": "1",
+    "user_id": "123e4567-e89b-12d3-a456-426655440000",
     "username": "test",
-    "email": "test@test.com",
-    "role": "user",
-}
-
-INCOMPLETE_DATA = {
-    "userId": "1",
-    "email": "test@test.com",
     "role": "user",
 }
 
 INVALID_USERDATA = {
-    "userId": "1",
+    "user_id": "123e4567-e89b-12d3-a456-426655440000",
     "username": "test",
-    "email": "test@test.com",
     "role": "clown",
 }
 
-#test get users before creating
+USER_SETTINGS_DATA = {
+  "user_id": "123e4567-e89b-12d3-a456-426655440000",
+  "language": "de",
+}
+
 def test_get_all_users_before_creating():
+    ''' test get users before creating '''
     response = client.get("user/")
     assert response.status_code == 200
     assert response.json() == []
 
-# test create user endpoint
 def test_create_user():
+    '''test create user endpoint'''
     response = client.post("user/", json.dumps(USERDATA, default=str))
-    assert response.status_code == 200
-
-def test_create_user_with_incomplete_data():
-    response = client.post("user/", json.dumps(INCOMPLETE_DATA, default=str))
-    assert response.status_code == 422
+    assert response.status_code == 201
 
 def test_create_user_with_invalid_data():
+    '''test creating user with invalid data'''
     response = client.post("user/", json.dumps(INVALID_USERDATA, default=str))
     assert response.status_code == 422
 
-# # test get /user endpoint
 def test_get_all_users():
+    '''test returning all users'''
     response = client.get("user/")
     assert response.status_code == 200
-    assert response.json() == [USERDATA]
+    assert response.json() == [{
+        "username": "test",
+        "role": "user",
+    }]
 
-# test get /user/{id} enpoint
 def test_get_not_existing_user_by_id():
-    response = client.get("user/0123456789")
+    '''test returning a user by non-existing id'''
+    response = client.get("user/123e4567-eaaa-12d3-a456-426655440000")
     assert response.status_code == 404
 
 def test_get_user_by_id():
-    response = client.get("user/1")
+    '''test returning a user by id'''
+    client.post(
+      "user/123e4567-e89b-12d3-a456-426655440000/settings",
+      json.dumps(USER_SETTINGS_DATA)
+    )
+    response = client.get("user/123e4567-e89b-12d3-a456-426655440000")
     assert response.status_code == 200
 
-# test put /user/{id} endpoint
 def test_update_user_with_valid_input():
-    response = client.put("user/1", json.dumps({"username": "updated_test"}))
+    '''test updating a user record'''
+    response = client.put(
+        "user/123e4567-e89b-12d3-a456-426655440000",
+        json.dumps({"username": "updated_test"})
+    )
     assert response.status_code == 200
 
 def test_update_user_with_invalid_input():
-    response = client.put("user/1", json.dumps({"role": "clown"}))
+    '''test inserting invalid data'''
+    response = client.put(
+        "user/123e4567-e89b-12d3-a456-426655440000",
+        json.dumps({"role": "clown"})
+    )
     assert response.status_code == 422
 
 def test_delete_user():
-    response = client.delete("user/1")
+    '''test deleting user endpoint'''
+    response = client.delete("user/123e4567-e89b-12d3-a456-426655440000")
     assert response.status_code == 200
+
+def test_deleted_user_settings():
+    '''test whether deleted user's settings remain'''
+    response = client.get("user/123e4567-e89b-12d3-a456-426655440000/settings")
+    assert response.status_code == 404

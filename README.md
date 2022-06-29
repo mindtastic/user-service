@@ -8,15 +8,31 @@ Python >= 3.9
 ## Setup
     pip install -r requirements.txt
 
+Get MongoDB credentials and add them to .env file.
+
+    cp .env.example .env
+
+## To run
+
+    docker-compose up
+
+## Running without database:
+
 Build Docker image
 
     docker build -t testimage .
 
 Start Docker container
 
-    docker run -d --name testcontainer -p 80:80 testimage
+    docker run -d --name testcontainer -p 8000:8000 testimage
 
-Show "Hello World" under `0.0.0.0:80`
+Show "Hello World" under `0.0.0.0:8000`
+
+## Running with local or cloud MongoDB
+
+To run without Docker run the following command:
+
+    python -m user_service.main
 
 ## Configure the location of your cloud MongoDB database:
 Create a variable for the MongoDB connection string
@@ -30,11 +46,6 @@ After setting up the [MongoDB Atlas](https://www.mongodb.com/docs/atlas/getting-
 ## or use local MongoDB database (In this branch local DB is used):
 In the database.py file, connection string for host is declared as `mongodb://localhost:27017` which will enable the local MongoDB database.
 VS Code extension for MongoDB and MongoDB Compass can used to connect, and access to the local database.
-
-# Start the service:
-To run without Docker run the following command:
-
-    python -m user_service.main
 
 # Test the endpoints:
 To test the endpoints, run the following command (After installing pytest):
