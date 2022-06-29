@@ -28,20 +28,20 @@ router = APIRouter()
     response_model=UserSettingsResponse,
     status_code=status.HTTP_200_OK
 )
-async def get_user_settings_by_id(x_user_id: Union[UUID, None] = Header(default=None)):
+async def get_user_settings_by_id(X_User_Id: Union[UUID, None] = Header(default=None)):
     """
     Get user settings by user id
     """
     #check if user exists
-    user = await users_collection.find_one({"user_id": x_user_id})
+    user = await users_collection.find_one({"user_id": X_User_Id})
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User {x_user_id} not found"
+            detail=f"User {X_User_Id} not found"
         )
     #get user settings
     try:
-        user_settings = await user_settings_collection.find_one({"user_id": x_user_id})
+        user_settings = await user_settings_collection.find_one({"user_id": X_User_Id})
     except ValidationError as error:
         logging.error("Error: %s", error)
         return HTTPException(
@@ -61,23 +61,23 @@ async def get_user_settings_by_id(x_user_id: Union[UUID, None] = Header(default=
     response_description="Add user settings by user id",
     response_model=UserSettingsResponse
 )
-async def create_user_settings(x_user_id: Union[UUID, None] = Header(default=None), user_settings: UserSettingsSchema = Body(...)):
+async def create_user_settings(X_User_Id: Union[UUID, None] = Header(default=None), user_settings: UserSettingsSchema = Body(...)):
     """
     Add user settings by user id
     """
     #check if user exists
-    user = await users_collection.find_one({"user_id": x_user_id})
+    user = await users_collection.find_one({"user_id": X_User_Id})
 
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User {x_user_id} not found"
+            detail=f"User {X_User_Id} not found"
         )
 
     try:
         #add X_User_Id header parameter to user settings model
         user_settings = jsonable_encoder(user_settings)
-        user_settings["user_id"] = x_user_id
+        user_settings["user_id"] = X_User_Id
         await user_settings_collection.insert_one(user_settings)
         return JSONResponse(status_code=status.HTTP_200_OK)
     except ValidationError as error:
@@ -92,20 +92,20 @@ async def create_user_settings(x_user_id: Union[UUID, None] = Header(default=Non
 @router.delete(
     "/settings", 
     response_description="Delete user settings by user id")
-async def delete_user_settings(x_user_id: Union[UUID, None] = Header(default=None)):
+async def delete_user_settings(X_User_Id: Union[UUID, None] = Header(default=None)):
     """
     Delete user settings by user id
     """
     #check if user exists
-    user = await users_collection.find_one({"user_id": x_user_id})
+    user = await users_collection.find_one({"user_id": X_User_Id})
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
     #check if user settings exists
-    user_settings = await user_settings_collection.find_one({"user_id": x_user_id})
+    user_settings = await user_settings_collection.find_one({"user_id": X_User_Id})
     if user_settings is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User settings not found")
 
     #otherwise delete user settings
-    await user_settings_collection.delete_one({"user_id": x_user_id})
+    await user_settings_collection.delete_one({"user_id": X_User_Id})
     return JSONResponse(status_code=status.HTTP_200_OK)

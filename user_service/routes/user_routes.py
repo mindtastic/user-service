@@ -41,11 +41,11 @@ async def show_all_users():
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
 )
-async def add_new_user(x_user_id: Union[UUID, None] = Header(default=None), user_data: UserModel = Body(...)):
+async def add_new_user(X_User_Id: Union[UUID, None] = Header(default=None), user_data: UserModel = Body(...)):
     '''Creates a new user record'''
     user_data = jsonable_encoder(user_data)
     #adds X-User-Id to user
-    user_data["user_id"] = x_user_id
+    user_data["user_id"] = X_User_Id
 
     try:
         await users_collection.insert_one(user_data)
@@ -64,14 +64,14 @@ async def add_new_user(x_user_id: Union[UUID, None] = Header(default=None), user
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
 )
-async def show_user(x_user_id: Union[UUID, None] = Header(default=None)):
+async def show_user(X_User_Id: Union[UUID, None] = Header(default=None)):
     '''Returns a single user record'''
-    if (user := await users_collection.find_one({"user_id": x_user_id})) is not None:
+    if (user := await users_collection.find_one({"user_id": X_User_Id})) is not None:
         return user
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"User {x_user_id} not found",
+        detail=f"User {X_User_Id} not found",
     )
 
 @router.put(
@@ -80,13 +80,13 @@ async def show_user(x_user_id: Union[UUID, None] = Header(default=None)):
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
 )
-async def update_user(x_user_id: Union[UUID, None] = Header(default=None), user_data: UpdateUserModel = Body(...)):
+async def update_user(X_User_Id: Union[UUID, None] = Header(default=None), user_data: UpdateUserModel = Body(...)):
     '''Updates a single user record'''
-    if (await users_collection.find_one({"user_id": x_user_id})) is not None:
+    if (await users_collection.find_one({"user_id": X_User_Id})) is not None:
         user_data = jsonable_encoder(user_data)
         try:
             await users_collection.update_one(
-                {"user_id": x_user_id}, {"$set": user_data}
+                {"user_id": X_User_Id}, {"$set": user_data}
             )
         except ValidationError as error:
             logging.error("Error: %s", error)
@@ -97,7 +97,7 @@ async def update_user(x_user_id: Union[UUID, None] = Header(default=None), user_
         return JSONResponse(status.HTTP_201_CREATED)
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"User {x_user_id} not found",
+        detail=f"User {X_User_Id} not found",
     )
 
 @router.delete(
@@ -105,17 +105,17 @@ async def update_user(x_user_id: Union[UUID, None] = Header(default=None), user_
     response_description="Delete user by user id.",
     status_code=status.HTTP_200_OK
 )
-async def delete_user(x_user_id: Union[UUID, None] = Header(default=None)):
+async def delete_user(X_User_Id: Union[UUID, None] = Header(default=None)):
     '''Deletes user record'''
-    user = await users_collection.find_one({"user_id": x_user_id})
+    user = await users_collection.find_one({"user_id": X_User_Id})
     if user:
-        await users_collection.delete_one({"user_id": x_user_id})
+        await users_collection.delete_one({"user_id": X_User_Id})
         #delete user settings
-        await user_settings_collection.delete_one({"user_id": x_user_id})
+        await user_settings_collection.delete_one({"user_id": X_User_Id})
         return JSONResponse(status.HTTP_200_OK)
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"User {x_user_id} not found",
+        detail=f"User {X_User_Id} not found",
     )
 
 
