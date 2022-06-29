@@ -1,7 +1,7 @@
 from typing import Optional
 from enum import Enum
 from uuid import UUID, uuid4
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, Header
 from bson import ObjectId #check bson
 
 
@@ -11,7 +11,8 @@ class RoleEnum(str, Enum):
 
 # (...) for required fields
 class UserModel(BaseModel):
-    user_id: UUID = Field(...)
+    #Get user_id from header
+    user_id: UUID = Header(default=None)
     username: Optional[str]
     role: RoleEnum = RoleEnum.user
 

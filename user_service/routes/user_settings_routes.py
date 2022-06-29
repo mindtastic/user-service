@@ -1,4 +1,6 @@
-from fastapi import APIRouter, HTTPException, status, Body
+import logging
+from typing import Union
+from fastapi import APIRouter, HTTPException, status, Body, Header
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from jsonschema import ValidationError
@@ -18,27 +20,33 @@ from user_service.models.user_settings_model import (
 #Create FastAPI router
 router = APIRouter()
 
-# TODO add Unauthorized error
+
 @router.get(
-    "/{user_id}/settings",
+    "/settings",
     response_description="Retrieve user settings by user id",
     response_model=UserSettingsResponse,
     status_code=status.HTTP_200_OK
 )
-async def get_user_settings_by_id(user_id: str):
+async def get_user_settings_by_id(x_user_id: Union[str, None] = Header(default=None)):
     """
     Get user settings by user id
     """
     #check if user exists
-    user = await users_collection.find_one({"user_id": user_id})
+    user = await users_collection.find_one({"user_id": x_user_id})
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User \"{user_id}\" not found"
+            detail=f"User {x_user_id} not found"
         )
-
     #get user settings
-    user_settings = await user_settings_collection.find_one({"user_id": user_id})
+    try:
+        user_settings = await user_settings_collection.find_one({"user_id": x_user_id})
+    except ValidationError as error:
+        logging.error("Error: %s", error)
+        return HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail= error,
+        )
     if user_settings is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -49,23 +57,22 @@ async def get_user_settings_by_id(user_id: str):
     return user_settings
 
 
-# TODO add Unauthorized error
 @router.post(
-    "/{user_id}/settings",
+    "/settings",
     response_description="Add user settings by user id",
     response_model=UserSettingsResponse
 )
-async def create_user_settings(user_id: str, user_settings: UserSettingsSchema = Body(...)):
+async def create_user_settings(x_user_id: Union[str, None] = Header(default=None), user_settings: UserSettingsSchema = Body(...)):
     """
     Add user settings by user id
     """
     #check if user exists
-    user = await users_collection.find_one({"user_id": user_id})
-    print(user_id)
+    user = await users_collection.find_one({"user_id": x_user_id})
+
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User {user_id} not found"
+            detail=f"User {x_user_id} not found"
         )
 
     try:
@@ -80,22 +87,23 @@ async def create_user_settings(user_id: str, user_settings: UserSettingsSchema =
 
 
 # Create DELETE endpoint for deleting user settings by user id
-# TODO add Unauthorized error
-@router.delete("/{user_id}/settings", response_description="Delete user settings by user id")
-async def delete_user_settings(user_id: str):
+@router.delete(
+    "/settings", 
+    response_description="Delete user settings by user id")
+async def delete_user_settings(x_user_id: Union[str, None] = Header(default=None)):
     """
     Delete user settings by user id
     """
     #check if user exists
-    user = await users_collection.find_one({"user_id": user_id})
+    user = await users_collection.find_one({"user_id": x_user_id})
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
     #check if user settings exists
-    user_settings = await user_settings_collection.find_one({"user_id": user_id})
+    user_settings = await user_settings_collection.find_one({"user_id": x_user_id})
     if user_settings is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User settings not found")
 
     #otherwise delete user settings
-    await user_settings_collection.delete_one({"user_id": user_id})
+    await user_settings_collection.delete_one({"user_id": x_user_id})
     return JSONResponse(status_code=status.HTTP_200_OK)
