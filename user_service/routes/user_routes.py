@@ -41,7 +41,7 @@ async def show_all_users():
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
 )
-async def add_new_user(x_user_id: Union[str, None] = Header(default=None), user_data: UserModel = Body(...)):
+async def add_new_user(x_user_id: Union[UUID, None] = Header(default=None), user_data: UserModel = Body(...)):
     '''Creates a new user record'''
     user_data = jsonable_encoder(user_data)
     #adds X-User-Id to user
@@ -64,7 +64,7 @@ async def add_new_user(x_user_id: Union[str, None] = Header(default=None), user_
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
 )
-async def show_user(x_user_id: Union[str, None] = Header(default=None)):
+async def show_user(x_user_id: Union[UUID, None] = Header(default=None)):
     '''Returns a single user record'''
     if (user := await users_collection.find_one({"user_id": x_user_id})) is not None:
         return user
@@ -80,7 +80,7 @@ async def show_user(x_user_id: Union[str, None] = Header(default=None)):
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
 )
-async def update_user(x_user_id: Union[str, None] = Header(default=None), user_data: UpdateUserModel = Body(...)):
+async def update_user(x_user_id: Union[UUID, None] = Header(default=None), user_data: UpdateUserModel = Body(...)):
     '''Updates a single user record'''
     if (await users_collection.find_one({"user_id": x_user_id})) is not None:
         user_data = jsonable_encoder(user_data)
@@ -105,7 +105,7 @@ async def update_user(x_user_id: Union[str, None] = Header(default=None), user_d
     response_description="Delete user by user id.",
     status_code=status.HTTP_200_OK
 )
-async def delete_user(x_user_id: Union[str, None] = Header(default=None)):
+async def delete_user(x_user_id: Union[UUID, None] = Header(default=None)):
     '''Deletes user record'''
     user = await users_collection.find_one({"user_id": x_user_id})
     if user:

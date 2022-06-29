@@ -1,6 +1,6 @@
 from typing import Optional
 from enum import Enum
-from uuid import UUID, uuid4
+from uuid import UUID
 from pydantic import BaseModel, Field
 from bson import ObjectId #check bson
 

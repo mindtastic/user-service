@@ -1,5 +1,6 @@
 import logging
 from typing import Union
+from uuid import UUID
 from fastapi import APIRouter, HTTPException, status, Body, Header
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
@@ -27,7 +28,7 @@ router = APIRouter()
     response_model=UserSettingsResponse,
     status_code=status.HTTP_200_OK
 )
-async def get_user_settings_by_id(x_user_id: Union[str, None] = Header(default=None)):
+async def get_user_settings_by_id(x_user_id: Union[UUID, None] = Header(default=None)):
     """
     Get user settings by user id
     """
@@ -60,7 +61,7 @@ async def get_user_settings_by_id(x_user_id: Union[str, None] = Header(default=N
     response_description="Add user settings by user id",
     response_model=UserSettingsResponse
 )
-async def create_user_settings(x_user_id: Union[str, None] = Header(default=None), user_settings: UserSettingsSchema = Body(...)):
+async def create_user_settings(x_user_id: Union[UUID, None] = Header(default=None), user_settings: UserSettingsSchema = Body(...)):
     """
     Add user settings by user id
     """
@@ -91,7 +92,7 @@ async def create_user_settings(x_user_id: Union[str, None] = Header(default=None
 @router.delete(
     "/settings", 
     response_description="Delete user settings by user id")
-async def delete_user_settings(x_user_id: Union[str, None] = Header(default=None)):
+async def delete_user_settings(x_user_id: Union[UUID, None] = Header(default=None)):
     """
     Delete user settings by user id
     """
