@@ -23,7 +23,7 @@ from user_service.models.user_model import (
 router = APIRouter()
 
 @router.get(
-    "",
+    "s/admin",
     response_description="Get all users.",
     response_model=List[UserModelResponse],
     status_code=status.HTTP_200_OK
@@ -36,7 +36,7 @@ async def show_all_users():
     return users
 
 @router.post(
-    "", 
+    "s/admin", 
     response_description="Add new user",
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
