@@ -23,7 +23,7 @@ from user_service.models.user_model import (
 router = APIRouter()
 
 @router.get(
-    "/",
+    "",
     response_description="Get all users.",
     response_model=List[UserModelResponse],
     status_code=status.HTTP_200_OK
@@ -36,7 +36,8 @@ async def show_all_users():
     return users
 
 @router.post(
-    "/", response_description="Add new user",
+    "", 
+    response_description="Add new user",
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
 )
@@ -58,7 +59,7 @@ async def add_new_user(x_user_id: Union[str, None] = Header(default=None), user_
     return JSONResponse(status_code=status.HTTP_201_CREATED)
 
 @router.get(
-    "/",
+    "",
     response_description="Read user by id.",
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
@@ -74,7 +75,7 @@ async def show_user(x_user_id: Union[str, None] = Header(default=None)):
     )
 
 @router.put(
-    "/",
+    "",
     response_description="Update user by id.",
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
@@ -100,7 +101,7 @@ async def update_user(x_user_id: Union[str, None] = Header(default=None), user_d
     )
 
 @router.delete(
-    "/", 
+    "", 
     response_description="Delete user by user id.",
     status_code=status.HTTP_200_OK
 )
