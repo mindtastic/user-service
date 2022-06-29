@@ -52,8 +52,6 @@ async def get_user_settings_by_id(x_user_id: Union[str, None] = Header(default=N
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User settings not found"
         )
-
-    #return user settings
     return user_settings
 
 
@@ -76,10 +74,13 @@ async def create_user_settings(x_user_id: Union[str, None] = Header(default=None
         )
 
     try:
+        #add X_User_Id header parameter to user settings model
         user_settings = jsonable_encoder(user_settings)
+        user_settings["user_id"] = x_user_id
         await user_settings_collection.insert_one(user_settings)
         return JSONResponse(status_code=status.HTTP_200_OK)
     except ValidationError as error:
+        logging.error("Error: %s", error)
         return HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail= error,

@@ -9,7 +9,7 @@ class LanguageEnum(str, Enum):
 
 
 class UserSettingsSchema(BaseModel):
-    user_id : UUID = Field(...)
+    user_id : UUID = Field()
     language: LanguageEnum = LanguageEnum.de #Default value is "de"
     #TODO more settings to be added here
 
@@ -20,7 +20,6 @@ class UserSettingsSchema(BaseModel):
         json_encoders = {ObjectId: str}
         schema_extra = {
             "example": {
-                "userId": "123e4567-e89b-12d3-a456-426655440000",
                 "language": "de"
             }
         }
