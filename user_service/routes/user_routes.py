@@ -1,9 +1,10 @@
-from typing import List
+from typing import List, Union
 from uuid import UUID
-from fastapi import APIRouter, Body, HTTPException, status
+from fastapi import APIRouter, Body, HTTPException, status, Header
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from jsonschema import ValidationError
+import logging
 
 #import user settings collection from user-service/database.py
 from user_service.database import (
@@ -45,6 +46,7 @@ async def add_new_user(user: UserModel = Body(...)):
     try:
         await users_collection.insert_one(user)
     except ValidationError as error:
+        logging.error("Error: %s", error)
         return HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail= error,
@@ -53,36 +55,37 @@ async def add_new_user(user: UserModel = Body(...)):
     return JSONResponse(status_code=status.HTTP_201_CREATED)
 
 @router.get(
-    "/{user_id}",
+    "/",
     response_description="Read user by id.",
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
 )
-async def show_user(user_id: str):
+async def show_user(x_user_id: Union[str, None] = Header(default=None)):
     '''Returns a single user record'''
-    if (user := await users_collection.find_one({"user_id": user_id})) is not None:
+    if (user := await users_collection.find_one({"user_id": x_user_id})) is not None:
         return user
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"User {user_id} not found",
+        detail=f"User {x_user_id} not found",
     )
 
 @router.put(
-    "/{user_id}",
+    "/",
     response_description="Update user by id.",
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
 )
-async def update_user(user_id: str, user_data: UpdateUserModel = Body(...)):
+async def update_user(x_user_id: Union[str, None] = Header(default=None), user_data: UpdateUserModel = Body(...)):
     '''Updates a single user record'''
-    if (await users_collection.find_one({"user_id": user_id})) is not None:
+    if (await users_collection.find_one({"user_id": x_user_id})) is not None:
         user_data = jsonable_encoder(user_data)
         try:
             await users_collection.update_one(
-                {"user_id": user_id}, {"$set": user_data}
+                {"user_id": x_user_id}, {"$set": user_data}
             )
         except ValidationError as error:
+            logging.error("Error: %s", error)
             return HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail= error,
@@ -90,19 +93,25 @@ async def update_user(user_id: str, user_data: UpdateUserModel = Body(...)):
         return JSONResponse(status.HTTP_201_CREATED)
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail="User {user_id} not found",
+        detail=f"User {x_user_id} not found",
     )
 
-@router.delete("/{user_id}", response_description="Delete user by user id.")
-async def delete_user(user_id: str):
+@router.delete(
+    "/", 
+    response_description="Delete user by user id.",
+    status_code=status.HTTP_200_OK
+)
+async def delete_user(x_user_id: Union[str, None] = Header(default=None)):
     '''Deletes user record'''
-    user = await users_collection.find_one({"user_id": user_id})
+    user = await users_collection.find_one({"user_id": x_user_id})
     if user:
-        await users_collection.delete_one({"user_id": user_id})
+        await users_collection.delete_one({"user_id": x_user_id})
         #delete user settings
-        await user_settings_collection.delete_one({"user_id": user_id})
+        await user_settings_collection.delete_one({"user_id": x_user_id})
         return JSONResponse(status.HTTP_200_OK)
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail="User {user_id} not found",
+        detail=f"User {x_user_id} not found",
     )
+
+
