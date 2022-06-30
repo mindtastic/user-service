@@ -1,11 +1,18 @@
 from http import client
 import json
+import logging
 from fastapi.testclient import TestClient
 from user_service.app import app
+import user_service.database as database
+import mongomock
 
 
 #create test mongodb client
 client = TestClient(app)
+
+with database.ClientManager() as db_client:
+    db_client = mongomock.MongoClient()
+    logging.info("Connected to mongomock database")    
 
 user_settings_data = {
   "user_id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900",
