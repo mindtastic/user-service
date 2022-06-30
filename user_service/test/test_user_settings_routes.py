@@ -8,15 +8,14 @@ from user_service.app import app
 client = TestClient(app)
 
 user_settings_data = {
-  "user_id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900",
   "language": "de",
 }
 
 USERDATA = {
-    "user_id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900",
     "username": "usersettingtest",
     "role": "admin",
 }
+
 
 def test_create_user():
     response = client.post("user/", headers={"X-User-Id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900"}, json = json.dumps(USERDATA, default=str))
@@ -24,41 +23,41 @@ def test_create_user():
 
 def test_create_user_settings():
     ''' test create user settings endpoint'''
-    response = client.post("user/1b7c8e6c-f201-432e-8d5c-991b92a4a900/settings", json.dumps(user_settings_data))
+    response = client.post("user/", headers={"X-User-Id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900"}, json= json.dumps(user_settings_data))
     assert response.status_code == 200
 
 #test get /user/{id} endpoint
 def test_get_user_settings_by_id():
-    response = client.get("user/1b7c8e6c-f201-432e-8d5c-991b92a4a900/settings")
+    response = client.get("user/", headers={"X-User-Id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900"})
     assert response.status_code == 200
     assert response.json() == {"language": "de"}
 
 #test delete user settings endpoint
 def test_delete_user_settings():
-    response = client.delete("user/1b7c8e6c-f201-432e-8d5c-991b92a4a900/settings")
+    response = client.delete("user/", headers={"X-User-Id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900"})
     assert response.status_code == 200
 
 #test get user settings after deleting
 def test_get_user_settings_after_deleting():
-    response = client.get("user/1b7c8e6c-f201-432e-8d5c-991b92a4a900/settings")
+    response = client.get("user/", headers={"X-User-Id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900"})
     assert response.status_code == 404
 
 #test create user settings for non existing user
 def test_create_user_settings_for_non_existing_user():
-    response = client.post("user/1b7c9e6c-f201-432e-8d5c-991b92a4a900/settings", json.dumps(user_settings_data))
+    response = client.post("user/", headers={"X-User-Id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900"}, json = json.dumps(user_settings_data))
     assert response.status_code == 404
 
 #test get for non existing user
 def test_get_user_settings_by_id_for_non_existing_user():
-    response = client.get("user/1b7c9e6c-f201-432e-8d5c-991b92a4a900/settings")
+    response = client.get("user/", headers={"X-User-Id": "a8ce4c84-f87b-11ec-b939-0242ac120002"})
     assert response.status_code == 404
 
 #test delete for non existing user
 def test_delete_user_settings_for_non_existing_user():
-    response = client.delete("user/1b7c9e6c-f201-432e-8d5c-991b92a4a900/settings")
+    response = client.delete("user/", headers={"X-User-Id": "a8ce4c84-f87b-11ec-b939-0242ac120002"})
     assert response.status_code == 404
 
 #delete test user
 def test_delete_user():
-    response = client.delete("user/1b7c8e6c-f201-432e-8d5c-991b92a4a900")
+    response = client.delete("user/", headers={"X-User-Id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900"})
     assert response.status_code == 200
