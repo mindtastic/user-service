@@ -8,10 +8,6 @@ import mongomock
 
 #create test mongodb client
 
-with database.ClientManager() as db_client:
-    db_client = mongomock.MongoClient()
-    logging.info("Connected to mongomock database")    
-
 user_settings_data = {
   "language": "de",
 }
