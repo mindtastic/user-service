@@ -68,25 +68,24 @@ async def create_user_settings(X_User_Id: Union[UUID, None] = Header(default=Non
     #check if user exists
     user = await users_collection.find_one({"user_id": X_User_Id})
 
-    if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User {X_User_Id} not found"
-        )
-
     try:
-        #add X_User_Id header parameter to user settings model
-        user_settings = jsonable_encoder(user_settings)
-        user_settings["user_id"] = X_User_Id
-        await user_settings_collection.insert_one(user_settings)
-        return JSONResponse(status_code=status.HTTP_200_OK)
+        if user is not None:
+            #add X_User_Id header parameter to user settings model
+            user_settings_dict = user_settings.dict()
+            user_settings_dict.update({"user_id": X_User_Id})
+            await user_settings_collection.insert_one(user_settings_dict)
+            return JSONResponse(status_code=status.HTTP_200_OK)
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"User {X_User_Id} not found"
+            )
     except ValidationError as error:
         logging.error("Error: %s", error)
         return HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail= error,
     )
-
 
 # Create DELETE endpoint for deleting user settings by user id
 @router.delete(

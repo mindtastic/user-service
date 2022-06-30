@@ -18,12 +18,12 @@ USERDATA = {
 
 
 def test_create_user():
-    response = client.post("user", headers={"X-User-Id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900"}, json = json.dumps(USERDATA, default=str))
+    response = client.post("users/admin", json.dumps(USERDATA, default=str), headers={"X-User-Id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900"})
     assert response.status_code == 201
 
 def test_create_user_settings():
     ''' test create user settings endpoint'''
-    response = client.post("user/settings", headers={"X-User-Id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900"}, json= json.dumps(user_settings_data))
+    response = client.post("user/settings", json.dumps(user_settings_data), headers={"X-User-Id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900"})
     assert response.status_code == 200
 
 #test get /user/{id} endpoint
@@ -44,7 +44,7 @@ def test_get_user_settings_after_deleting():
 
 #test create user settings for non existing user
 def test_create_user_settings_for_non_existing_user():
-    response = client.post("user/settings", headers={"X-User-Id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900"}, json = json.dumps(user_settings_data))
+    response = client.post("user/settings", json.dumps(user_settings_data), headers={"X-User-Id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900"})
     assert response.status_code == 404
 
 #test get for non existing user
