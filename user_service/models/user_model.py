@@ -11,7 +11,7 @@ class RoleEnum(str, Enum):
 
 # (...) for required fields
 class UserModel(BaseModel):
-    user_id: UUID = Field()
+    user_id: Optional[UUID]
     username: Optional[str]
     role: RoleEnum = RoleEnum.user
 
