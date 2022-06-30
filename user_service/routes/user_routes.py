@@ -43,7 +43,6 @@ async def add_new_user(
     '''Creates a new user record'''
     user_data_dict = user_data.dict()
     user_data_dict.update({"user_id": X_User_Id})
-    #user_data = jsonable_encoder(user_data)
 
     try:
         await users_collection.insert_one(user_data_dict)
