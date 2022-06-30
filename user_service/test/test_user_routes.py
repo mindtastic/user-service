@@ -13,10 +13,6 @@ INVALID_USERDATA = {
     "role": "clown",
 }
 
-USER_SETTINGS_DATA = {
-  "user_id": "123e4567-e89b-12d3-a456-426655440000",
-  "language": "de",
-}
 
 with TestClient(app) as client:
     def test_get_all_users_before_creating():
@@ -45,9 +41,9 @@ with TestClient(app) as client:
         }]
 
     def test_get_not_existing_user_by_id():
-        '''test returning a user by non-existing id'''
+        #test getting not existing user by id, should create the new user and return 201 created
         response = client.get("user", headers={"X-User-Id": "123e4567-eaaa-12d3-a456-426655440000"})
-        assert response.status_code == 404
+        assert response.status_code == 200
 
     def test_get_user_by_id():
         '''test returning a user by id'''

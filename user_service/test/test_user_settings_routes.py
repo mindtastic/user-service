@@ -6,7 +6,6 @@ from user_service.app import app
 
 #create test mongodb client
 
-
 user_settings_data = {
   "language": "de",
 }

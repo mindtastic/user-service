@@ -17,6 +17,12 @@ from user_service.models.user_model import (
 #Create FastAPI router
 router = APIRouter()
 
+#Default user data
+default_user_data = {
+    "username": "",
+    "role": "user",
+}
+
 @router.get(
     "s/admin", #TODO: change to /admin after API spec is updated
     response_description="Get all users.",
@@ -65,14 +71,12 @@ async def show_user(
     X_User_Id: Union[UUID, None] = Header(default=None),
     users_collection = Depends(get_mongo_collection(ServiceDBCollection.USERS))
 ):
-    '''Returns a single user record'''
+    #return user by id, if user is not found, create new user with empty Body
     if (user := await users_collection.find_one({"user_id": X_User_Id})) is not None:
         return user
-
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"User {X_User_Id} not found",
-    )
+    else:
+        await add_new_user(X_User_Id=X_User_Id, user_data=UserModel(**default_user_data), users_collection=users_collection)
+        return await users_collection.find_one({"user_id": X_User_Id})
 
 @router.put(
     "",
