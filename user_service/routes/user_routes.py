@@ -1,16 +1,11 @@
 from typing import List, Union
 from uuid import UUID
-from fastapi import APIRouter, Body, HTTPException, status, Header
+from user_service.routes.dependencies import get_mongo_collection, ServiceDBCollection
+from fastapi import APIRouter, Body, HTTPException, status, Header, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from jsonschema import ValidationError
 import logging
-
-#import user settings collection from user-service/database.py
-from user_service.database import (
-    users_collection,
-    user_settings_collection
-)
 
 #import schemas from user-service/models/user_model.py
 from user_service.models.user_model import (
@@ -28,7 +23,7 @@ router = APIRouter()
     response_model=List[UserModelResponse],
     status_code=status.HTTP_200_OK
 )
-async def show_all_users():
+async def show_all_users(users_collection = Depends(get_mongo_collection(ServiceDBCollection.USERS))):
     '''Returns a status code and a list of all users'''
     users = []
     async for user in users_collection.find():
@@ -41,7 +36,10 @@ async def show_all_users():
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
 )
-async def add_new_user(X_User_Id: Union[UUID, None] = Header(default=None), user_data: UserModel = Body(...)):
+async def add_new_user(
+    X_User_Id: Union[UUID, None] = Header(default=None), 
+    users_collection = Depends(get_mongo_collection(ServiceDBCollection.USERS)),
+    user_data: UserModel = Body(...)):
     '''Creates a new user record'''
     user_data_dict = user_data.dict()
     user_data_dict.update({"user_id": X_User_Id})
@@ -64,7 +62,10 @@ async def add_new_user(X_User_Id: Union[UUID, None] = Header(default=None), user
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
 )
-async def show_user(X_User_Id: Union[UUID, None] = Header(default=None)):
+async def show_user(
+    X_User_Id: Union[UUID, None] = Header(default=None),
+    users_collection = Depends(get_mongo_collection(ServiceDBCollection.USERS))
+):
     '''Returns a single user record'''
     if (user := await users_collection.find_one({"user_id": X_User_Id})) is not None:
         return user
@@ -80,7 +81,10 @@ async def show_user(X_User_Id: Union[UUID, None] = Header(default=None)):
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
 )
-async def update_user(X_User_Id: Union[UUID, None] = Header(default=None), user_data: UpdateUserModel = Body(...)):
+async def update_user(
+    X_User_Id: Union[UUID, None] = Header(default=None), 
+    users_collection = Depends(get_mongo_collection(ServiceDBCollection.USERS)),
+    user_data: UpdateUserModel = Body(...)):
     '''Updates a single user record'''
     if (await users_collection.find_one({"user_id": X_User_Id})) is not None:
         user_data = jsonable_encoder(user_data)
@@ -105,7 +109,11 @@ async def update_user(X_User_Id: Union[UUID, None] = Header(default=None), user_
     response_description="Delete user by user id.",
     status_code=status.HTTP_200_OK
 )
-async def delete_user(X_User_Id: Union[UUID, None] = Header(default=None)):
+async def delete_user(
+    X_User_Id: Union[UUID, None] = Header(default=None),
+    users_collection = Depends(get_mongo_collection(ServiceDBCollection.USERS)),
+    user_settings_collection = Depends(get_mongo_collection(ServiceDBCollection.SETTINGS))
+):
     '''Deletes user record'''
     user = await users_collection.find_one({"user_id": X_User_Id})
     if user:
