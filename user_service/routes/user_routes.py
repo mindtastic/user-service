@@ -18,7 +18,7 @@ from user_service.models.user_model import (
 router = APIRouter()
 
 @router.get(
-    "s/admin",
+    "s/admin", #TODO: change to /admin after API spec is updated
     response_description="Get all users.",
     response_model=List[UserModelResponse],
     status_code=status.HTTP_200_OK
@@ -31,7 +31,7 @@ async def show_all_users(users_collection = Depends(get_mongo_collection(Service
     return users
 
 @router.post(
-    "s/admin", 
+    "s/admin", #TODO: change to /admin after API spec is updated
     response_description="Add new user",
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
