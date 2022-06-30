@@ -1,7 +1,7 @@
 from enum import Enum
-from uuid import UUID
-from pydantic import BaseModel, Field
+from pydantic import UUID4, BaseModel, Field
 from bson import ObjectId
+from typing import Optional
 
 class LanguageEnum(str, Enum):
     de = 'de'
@@ -9,7 +9,7 @@ class LanguageEnum(str, Enum):
 
 
 class UserSettingsSchema(BaseModel):
-    user_id : UUID = Field()
+    user_id: Optional[UUID4]
     language: LanguageEnum = LanguageEnum.de #Default value is "de"
     #TODO more settings to be added here
 
