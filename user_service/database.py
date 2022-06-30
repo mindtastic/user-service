@@ -1,7 +1,6 @@
 import os
 from fastapi import FastAPI
 import motor.motor_asyncio
-from urllib.parse import quote_plus
 
 MONGO_DETAILS = "mongodb://localhost:27017" # MongoDB details for local testing database
 
