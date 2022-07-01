@@ -1,4 +1,4 @@
-import logging
+from loguru import logger
 import os
 from fastapi import FastAPI
 import motor.motor_asyncio
@@ -13,10 +13,10 @@ async def connect_to_mongodb(app: FastAPI):
         if connection_string is None:
             buildin_connection_string = connection_string_from_env()
             client = motor.motor_asyncio.AsyncIOMotorClient(buildin_connection_string)
-            logging.info(f"Connected to MongoDB from build-in connection string {buildin_connection_string}")
+            logger.info(f"Connected to MongoDB from build-in connection string {buildin_connection_string}")
         else:
             client = motor.motor_asyncio.AsyncIOMotorClient(connection_string)
-            logging.info("Connected to MongoDB database using env connection string")
+            logger.info("Connected to MongoDB database using env connection string")
         
         await client.admin.command("ismaster")
 
@@ -25,7 +25,7 @@ async def connect_to_mongodb(app: FastAPI):
         app.state.user_collection = database.get_collection("users_collection")
     except Exception as e:
         # raise configuration error
-        print("Error connecting to MongoDB: %s" % e)
+        logger.error("Error connecting to MongoDB: %s" % e)
         raise e
 
 def connection_string_from_env() -> str:

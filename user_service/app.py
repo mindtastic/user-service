@@ -2,7 +2,7 @@ from fastapi import FastAPI, status
 from user_service.routes.user_settings_routes import router as UserSettingsRouter
 from user_service.routes.user_routes import router as UsersRouter
 from user_service.events import create_startup_handler, create_shutdown_handler
-import logging
+from loguru import logger
 
 PREFIX = "/user"
 
@@ -25,5 +25,5 @@ def read_root():
 #Create get endpoint for the health check
 @app.get("/health")
 def health_check():
-    logging.log(logging.INFO, "Health check")
+    logger.info("Health check")
     return status.HTTP_200_OK
