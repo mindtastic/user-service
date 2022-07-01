@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 from user_service.app import app
 from mongomock_motor import AsyncMongoMockClient
 
-from user_service.routes.dependencies import  _get_settings_collection, _get_users_collection
+from user_service.routes.dependencies import  ServiceDBCollection, get_mongo_collection
 
 #create test mongodb client
 
@@ -28,8 +28,8 @@ with TestClient(app) as client:
         return override_settings_collection
 
     #override mongodb dependency
-    app.dependency_overrides[_get_users_collection] = override_mongodb_users_collection_dependency
-    app.dependency_overrides[_get_settings_collection] = override_mongodb_user_settings_collection_dependency 
+    app.dependency_overrides[get_mongo_collection(ServiceDBCollection.USERS)] = override_mongodb_users_collection_dependency
+    app.dependency_overrides[get_mongo_collection(ServiceDBCollection.SETTINGS)] = override_mongodb_user_settings_collection_dependency 
 
     def test_create_user():
         response = client.post("users/admin", json.dumps(USERDATA, default=str), headers={"X-User-Id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900"})
