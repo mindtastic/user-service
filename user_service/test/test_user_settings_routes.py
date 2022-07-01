@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 from user_service.app import app
 from mongomock_motor import AsyncMongoMockClient
 
-from user_service.routes.dependencies import ServiceDBCollection, _get_settings_collection, _get_users_collection, get_mongo_collection
+from user_service.routes.dependencies import  _get_settings_collection, _get_users_collection
 
 #create test mongodb client
 
@@ -17,19 +17,20 @@ USERDATA = {
     "role": "admin",
 }
 
-async def override_mongodb_users_collection_dependency():
-    override_users_collection = AsyncMongoMockClient()['users']['users_collection']
-    return override_users_collection
-
-async def override_mongodb_user_settings_collection_dependency():
-    override_settings_collection = AsyncMongoMockClient()['users']['user_settings_collection']
-    return override_settings_collection
-
-#override mongodb dependency
-app.dependency_overrides[get_mongo_collection(ServiceDBCollection.USERS)] = override_mongodb_users_collection_dependency
-app.dependency_overrides[get_mongo_collection(ServiceDBCollection.SETTINGS)] = override_mongodb_user_settings_collection_dependency
-
 with TestClient(app) as client:
+
+    async def override_mongodb_users_collection_dependency():
+        override_users_collection = AsyncMongoMockClient()['users']['users_collection']
+        return override_users_collection
+
+    async def override_mongodb_user_settings_collection_dependency():
+        override_settings_collection = AsyncMongoMockClient()['users']['user_settings_collection']
+        return override_settings_collection
+
+    #override mongodb dependency
+    app.dependency_overrides[_get_users_collection] = override_mongodb_users_collection_dependency
+    app.dependency_overrides[_get_settings_collection] = override_mongodb_user_settings_collection_dependency
+
     def test_create_user():
         response = client.post("users/admin", json.dumps(USERDATA, default=str), headers={"X-User-Id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900"})
         assert response.status_code == 201
@@ -57,7 +58,7 @@ with TestClient(app) as client:
     #test create user settings for non existing user
     def test_create_user_settings_for_non_existing_user():
         response = client.post("user/settings", json.dumps(USERSETTINGSDATA), headers={"X-User-Id": "a8ce4c84-f87b-11ec-b939-0242ac120002"})
-        assert response.status_code == 200
+        assert response.status_code == 404
 
     #test get for non existing user
     def test_get_user_settings_by_id_for_non_existing_user():
@@ -74,4 +75,4 @@ with TestClient(app) as client:
         response = client.delete("user", headers={"X-User-Id": "1b7c8e6c-f201-432e-8d5c-991b92a4a900"})
         assert response.status_code == 200
 
-app.dependency_overrides = {}
+    app.dependency_overrides = {}
