@@ -14,10 +14,11 @@ async def connect_to_mongodb(app: FastAPI):
         #check if the env variables are empty, if they are, use the local database
         if uri == None:
             client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
-            print("Connected to localhost:27017")
+            #log info message to console
+            logging.info("Connected to localhost:27017")
         else:
             client = motor.motor_asyncio.AsyncIOMotorClient(uri)    
-            print("Connected to MongoDB database using env connection string")
+            logging.info("Connected to MongoDB database using env connection string")
 
         database = client.users # create new database called users
         app.state.user_settings_collection = database.get_collection("user_settings_collection")
