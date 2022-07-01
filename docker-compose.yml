@@ -10,6 +10,8 @@ services:
       - MONGO_INITDB_DATABASE=user-service
     ports:
       - 27017:27017
+    volumes:
+      - user_mongo:/data/db
 
   app:
     build:
@@ -22,5 +24,10 @@ services:
       MONGODB_DB: user-service
     depends_on:
       - mongodb
+    volumes:
+      - .:/code
     ports:
       - "8000:8000"
+
+volumes:
+  user_mongo:

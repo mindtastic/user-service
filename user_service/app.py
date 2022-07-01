@@ -20,7 +20,7 @@ app.include_router(UsersRouter, prefix=PREFIX, tags=["Users"])
 #Create get endpoint for the root path
 @app.get("/", tags=["Root"])
 def read_root():
-    return {"message": "Hello World!"}
+    return {"message": "Hello World"}
 
 #Create get endpoint for the health check
 @app.get("/health")

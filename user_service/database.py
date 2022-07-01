@@ -10,11 +10,10 @@ async def connect_to_mongodb(app: FastAPI):
     #add try except block to handle if the connection string is not set
     try:
         #check if the env variables are empty, if they are, use the local database
-        if uri == None:
+        if uri is None:
             client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
             print("Connected to localhost:27017")
         else:
-            print(uri)
             client = motor.motor_asyncio.AsyncIOMotorClient(uri)
             print("Connected to MongoDB database using env connection string")
         await client.admin.command("ismaster")
