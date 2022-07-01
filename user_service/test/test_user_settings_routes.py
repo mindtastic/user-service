@@ -1,7 +1,5 @@
 from http import client
 import json
-from typing import Callable
-from fastapi import Request
 from fastapi.testclient import TestClient
 from user_service.app import app
 from mongomock_motor import AsyncMongoMockClient
