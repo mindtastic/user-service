@@ -3,8 +3,6 @@ import json
 import pytest
 from fastapi.testclient import TestClient
 from user_service.app import app
-import user_service.database as database
-import mongomock
 
 #create test mongodb client
 
