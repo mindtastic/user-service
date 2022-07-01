@@ -3,7 +3,6 @@ from typing import Callable
 from fastapi import Depends, status
 from fastapi.exceptions import HTTPException
 from fastapi.requests import Request
-from motor.motor_asyncio import AsyncIOMotorCollection
 
 class ServiceDBCollection(enum.Enum):
     SETTINGS = 1
