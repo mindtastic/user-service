@@ -1,4 +1,4 @@
-import logging
+from loguru import logger
 from typing import Union
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status, Body, Header
@@ -41,7 +41,7 @@ async def get_user_settings_by_id(
     try:
         user_settings = await user_settings_collection.find_one({"user_id": X_User_Id})
     except ValidationError as error:
-        logging.error("Error: %s", error)
+        logger.error("Error: %s", error)
         return HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail= error,
@@ -84,7 +84,7 @@ async def create_user_settings(
                 detail=f"User {X_User_Id} not found"
             )
     except ValidationError as error:
-        logging.error("Error: %s", error)
+        logger.error("Error: %s", error)
         return HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail= error,
