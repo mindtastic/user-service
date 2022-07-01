@@ -6,7 +6,7 @@ from urllib.parse import quote_plus
 MONGO_DETAILS = "mongodb://localhost:27017" # MongoDB details for local testing database
 
 async def connect_to_mongodb(app: FastAPI):
-    uri = connection_string_from_env()
+    uri = os.getenv("CONNECTION_STRING") or connection_string_from_env()
     #add try except block to handle if the connection string is not set
     try:
         #check if the env variables are empty, if they are, use the local database
