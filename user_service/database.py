@@ -30,7 +30,7 @@ def connection_string_from_env() -> str:
     return "mongodb://%s:%s@%s/%s?authSource=%s" % (
             quote_plus(os.getenv('MONGODB_USER', 'admin')),
             quote_plus(os.getenv('MONGODB_PASSWORD', 'admin')),
-            quote_plus(os.getenv('MONGODB_HOST', 'mongo_wiki')),
-            quote_plus(os.getenv('MONGODB_DB', 'wiki')),
+            quote_plus(os.getenv('MONGODB_HOST')),
+            quote_plus(os.getenv('MONGODB_DB')),
             quote_plus(os.getenv('MONGODB_AUTHSOURCE', 'admin'))
         )
