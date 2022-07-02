@@ -7,8 +7,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from jsonschema import ValidationError
 import logging
-
-#import schemas from user-service/models/user_model.py
+from user_service.tilt.user_service_tilt import tilt_dict
 from user_service.models.user_model import (
     UserModel,
     UpdateUserModel,
@@ -131,16 +130,14 @@ async def delete_user(
     )
 
 
-#get dict of TILT spec from tilt/user_service_tilt.json an store to a json variable
-with open("user_service/tilt/user_service_tilt.json") as tilt_spec_file:
-    tilt_spec = json.load(tilt_spec_file)
 
 
-#Get endpoint for exposing TILT spec
+#Get endpoint for exposing TILT spec, return tilt_dict from user_service/tilt/user_service_tilt.py file
 @router.get(
-    "/tilt/user",
-    response_description="Get TILT spec",
+    "/admin/tilt/user",
+    response_description="Get TILT spec.",
+    response_model=dict,
     status_code=status.HTTP_200_OK
 )
 async def get_tilt_spec():
-    return tilt_spec
+    return tilt_dict
