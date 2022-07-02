@@ -12,9 +12,13 @@ Get MongoDB credentials and add them to .env file.
 
     cp .env.example .env
 
-## To run
+## Local development
 
-    docker-compose up
+We provide a `docker-compose.yml` for bringing up the service and a MongoDB database for local development. For a quickstart just run
+
+```bash
+docker compose up
+```
 
 ## Running without database:
 
