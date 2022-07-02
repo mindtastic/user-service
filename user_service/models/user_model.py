@@ -1,6 +1,6 @@
 from typing import Optional
 from enum import Enum
-from pydantic import UUID4, BaseModel, Field
+from pydantic import UUID4, BaseModel
 from bson import ObjectId #check bson
 
 
@@ -52,3 +52,4 @@ class UpdateUserModel(BaseModel):
                 "role": "admin",
             }
         }
+

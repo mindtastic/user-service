@@ -10,7 +10,6 @@ import logging
 
 #import schemas from user-service/models/user_model.py
 from user_service.models.user_model import (
-    TiltResponseModel,
     UserModel,
     UpdateUserModel,
     UserModelResponse,
