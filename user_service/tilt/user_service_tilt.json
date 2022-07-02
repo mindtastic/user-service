@@ -1,0 +1,63 @@
+{
+    "dataDisclosed": [
+        {
+            "_id": "user-service-tilt-01",
+            "category": "Language Preference",
+            "legalBases": [
+                {
+                    "description": "General Data Protection Regulation (GDPR) Art.",
+                    "reference": "GDPR-99-1-a"
+                },
+                {
+                    "description": "BDSG-42-5 refers to the processing of personal data within..",
+                    "reference": "BDSG-42-5"
+                }
+            ],
+            "legitimateInterests": [
+                {
+                    "exists": false,
+                    "reasoning": "No legitimate interests"
+                }
+            ],
+            "nonDisclosure": {
+                "consequences": "If the data is not disclosed, the shipment cannot be delivered.",
+                "contractualRegulation": false,
+                "legalRequirement": false,
+                "obligationToProvide": false
+            },
+            "purposes": [
+                {
+                    "description": "To provide the user-service-tilt",
+                    "purpose": "To provide the user-service-tilt"
+                }
+            ],
+            "recipients": [
+                {
+                    "address": "",
+                    "category": "",
+                    "country": "DE",
+                    "division": "",
+                    "name": "",
+                    "representative": null
+                }
+            ],
+            "storage": [
+                {
+                    "aggregationFunction": "min",
+                    "legalBasisConditional": [
+                        "SGB-100-42"
+                    ],
+                    "purposeConditional": [
+                        "Data is always stored"
+                    ],
+                    "temporal": [
+                        {
+                            "description": "Temporal element for the user-service-tilt",
+                            "ttl": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
