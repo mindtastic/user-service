@@ -134,7 +134,7 @@ async def delete_user(
 
 #Get endpoint for exposing TILT spec, return tilt_dict from user_service/tilt/user_service_tilt.py file
 @router.get(
-    "/admin/tilt/user",
+    "/tilt/user",
     response_description="Get TILT spec.",
     response_model=dict,
     status_code=status.HTTP_200_OK
