@@ -1,7 +1,4 @@
 from tilt import tilt
-import json
-from hashlib import sha256
-from datetime import datetime
 
 #List of legal_bases with reference and description
 first_legal_base = tilt.AnyOfSchemaForTheLegalBasesOfTheDataDisclosed(
