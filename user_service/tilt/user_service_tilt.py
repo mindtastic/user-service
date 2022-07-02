@@ -3,20 +3,69 @@ import json
 from hashlib import sha256
 from datetime import datetime
 
-result = {}
-result["_hash"] = sha256('<insert hashable content here>'.encode('utf-8')).hexdigest()
-result["_id"] = 'user-service-tilt-01'
-result["created"] = '2022-07-02T10:03:27+0000'
-result["language"] = 'en'
-result["modified"] = datetime.now().isoformat()
-result["name"] = 'Kopfsachen e.V.'
-result["status"] = 'active'
-result["url"] = 'https://www.kopfsachen.org/'
-result["version"] = 1
+#List of legal_bases with reference and description
+first_legal_base = tilt.AnyOfSchemaForTheLegalBasesOfTheDataDisclosed(
+    reference="GDPR-99-1-a",
+    description="General Data Protection Regulation (GDPR) – Art."
+)
+second_legal_base = tilt.AnyOfSchemaForTheLegalBasesOfTheDataDisclosed(
+    reference="BDSG-42-5",
+    description="BDSG-42-5 refers to the processing of personal data within.."
+)
 
-meta = tilt.Meta.from_dict(result)
+#Store the user-service-tilt
+temporal = tilt.TemporalElement(
+    description='Temporal element for the user-service-tilt',
+    ttl=''
+)
+storage = tilt.StorageElement(
+    temporal=[temporal], 
+    purpose_conditional=["Data is always stored"],
+    legal_basis_conditional=["SGB-100-42"],
+    aggregation_function=tilt.AggregationFunction.MIN
+    )
 
-print(meta)
-# <tilt.tilt.Meta object at 0x7fef287928d0>
+legitimate_interests = tilt.AnyOfSchemaForLegitimateInterests(
+    exists=False,
+    reasoning="No legitimate interests"
+)
 
-print(meta.to_dict())
+non_disclosure = tilt.NonDisclosure(
+    legal_requirement=False,
+    contractual_regulation=False,
+    obligation_to_provide=False,
+    consequences="If the data is not disclosed, the shipment cannot be delivered."
+)
+
+purposes = tilt.AnyOfSchemaForThePurposes( 
+    purpose="To provide the user-service-tilt",
+    description="To provide the user-service-tilt"
+)
+
+first_recipient = tilt.Recipient(
+    name="",
+    address="",
+    category="",
+    country="DE",
+    division="",
+    representative=None
+)
+
+#Data disclosed to user-service-tilt
+disclosed_data = tilt.DataDisclosedElement(
+    id='user-service-tilt-01',
+    category="Language Preference",
+    legal_bases=[first_legal_base, second_legal_base],
+    storage=[storage],
+    legitimate_interests=[legitimate_interests],
+    non_disclosure=non_disclosure,
+    purposes=[purposes],
+    recipients=[first_recipient]
+)
+
+# print(disclosed_data.to_dict())
+tilt_dict = {}
+tilt_dict['dataDisclosed'] = disclosed_data.to_dict()
+
+with open('user_service_tilt.json', 'w') as fp:
+    json.dump(tilt_dict, fp, indent=4)
