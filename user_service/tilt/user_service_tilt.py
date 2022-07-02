@@ -63,9 +63,8 @@ disclosed_data = tilt.DataDisclosedElement(
     recipients=[first_recipient]
 )
 
-# print(disclosed_data.to_dict())
 tilt_dict = {}
 tilt_dict['dataDisclosed'] = disclosed_data.to_dict()
 
-with open('user_service_tilt.json', 'w') as fp:
-    json.dump(tilt_dict, fp, indent=4)
+# with open('user_service_tilt.json', 'w') as fp:
+#     json.dump(tilt_dict, fp, indent=4)
