@@ -6,7 +6,7 @@ from datetime import datetime
 #List of legal_bases with reference and description
 first_legal_base = tilt.AnyOfSchemaForTheLegalBasesOfTheDataDisclosed(
     reference="GDPR-99-1-a",
-    description="General Data Protection Regulation (GDPR) – Art."
+    description="General Data Protection Regulation (GDPR) Art."
 )
 second_legal_base = tilt.AnyOfSchemaForTheLegalBasesOfTheDataDisclosed(
     reference="BDSG-42-5",
