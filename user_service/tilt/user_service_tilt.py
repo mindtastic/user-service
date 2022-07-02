@@ -1,4 +1,7 @@
 from tilt import tilt
+import fastjsonschema
+import json
+import requests
 
 #List of legal_bases with reference and description
 first_legal_base = tilt.AnyOfSchemaForTheLegalBasesOfTheDataDisclosed(
@@ -67,3 +70,17 @@ tilt_dict['dataDisclosed'] = data_disclosed
 
 # with open('user_service_tilt.json', 'w') as fp:
 #     json.dump(tilt_dict, fp, indent=4)
+
+#Add validator to check the tilt_dict
+# Load schema to validate against
+file = requests.get('https://raw.githubusercontent.com/Transparency-Information-Language/schema/master/tilt-schema.json')
+schema = json.loads(file.content)
+
+# Load instance/document to validate;
+# you may use your own tilt object with .to_dict() here
+f = open('user_service_tilt.json')
+instance = json.load(f)
+# Compile schema
+validate_func = fastjsonschema.compile(schema)
+# Validate instance against schema
+validate_func(instance)
