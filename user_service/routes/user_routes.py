@@ -6,8 +6,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from jsonschema import ValidationError
 import logging
-
-#import schemas from user-service/models/user_model.py
+from user_service.tilt.user_service_tilt import tilt_dict
 from user_service.models.user_model import (
     UserModel,
     UpdateUserModel,
@@ -24,7 +23,7 @@ default_user_data = {
 }
 
 @router.get(
-    "s/admin", #TODO: change to /admin after API spec is updated
+    "/users/admin", #TODO: change to /admin after API spec is updated
     response_description="Get all users.",
     response_model=List[UserModelResponse],
     status_code=status.HTTP_200_OK
@@ -37,7 +36,7 @@ async def show_all_users(users_collection = Depends(get_mongo_collection(Service
     return users
 
 @router.post(
-    "s/admin", #TODO: change to /admin after API spec is updated
+    "/users/admin", #TODO: change to /admin after API spec is updated
     response_description="Add new user",
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
@@ -62,7 +61,7 @@ async def add_new_user(
     return JSONResponse(status_code=status.HTTP_201_CREATED)
 
 @router.get(
-    "",
+    "/user",
     response_description="Read user by id.",
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
@@ -79,7 +78,7 @@ async def show_user(
         return await users_collection.find_one({"user_id": X_User_Id})
 
 @router.put(
-    "",
+    "/user",
     response_description="Update user by id.",
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
@@ -108,7 +107,7 @@ async def update_user(
     )
 
 @router.delete(
-    "", 
+    "/user", 
     response_description="Delete user by user id.",
     status_code=status.HTTP_200_OK
 )
@@ -130,3 +129,14 @@ async def delete_user(
     )
 
 
+
+
+#Get endpoint for exposing TILT spec, return tilt_dict from user_service/tilt/user_service_tilt.py file
+@router.get(
+    "/tilt/user",
+    response_description="Get TILT spec.",
+    response_model=dict,
+    status_code=status.HTTP_200_OK
+)
+async def get_tilt_spec():
+    return tilt_dict

@@ -4,8 +4,6 @@ from user_service.routes.user_routes import router as UsersRouter
 from user_service.events import create_startup_handler, create_shutdown_handler
 from loguru import logger
 
-PREFIX = "/user"
-
 # Create FastAPI app
 app = FastAPI()
 
@@ -14,8 +12,8 @@ app.add_event_handler('startup', create_startup_handler(app))
 app.add_event_handler('shutdown', create_shutdown_handler(app))
 
 #Add User Settings router
-app.include_router(UserSettingsRouter, prefix=PREFIX, tags=["User-Settings"])
-app.include_router(UsersRouter, prefix=PREFIX, tags=["Users"])
+app.include_router(UserSettingsRouter, tags=["User-Settings"])
+app.include_router(UsersRouter, tags=["Users"])
 
 #Create get endpoint for the root path
 @app.get("/", tags=["Root"])
