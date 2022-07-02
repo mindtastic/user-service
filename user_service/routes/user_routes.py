@@ -1,4 +1,3 @@
-import json
 from typing import List, Union
 from uuid import UUID
 from user_service.routes.dependencies import get_mongo_collection, ServiceDBCollection
