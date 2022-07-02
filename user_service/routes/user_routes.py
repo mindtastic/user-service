@@ -1,3 +1,4 @@
+import json
 from typing import List, Union
 from uuid import UUID
 from user_service.routes.dependencies import get_mongo_collection, ServiceDBCollection
@@ -9,6 +10,7 @@ import logging
 
 #import schemas from user-service/models/user_model.py
 from user_service.models.user_model import (
+    TiltResponseModel,
     UserModel,
     UpdateUserModel,
     UserModelResponse,
@@ -24,7 +26,7 @@ default_user_data = {
 }
 
 @router.get(
-    "s/admin", #TODO: change to /admin after API spec is updated
+    "/users/admin", #TODO: change to /admin after API spec is updated
     response_description="Get all users.",
     response_model=List[UserModelResponse],
     status_code=status.HTTP_200_OK
@@ -37,7 +39,7 @@ async def show_all_users(users_collection = Depends(get_mongo_collection(Service
     return users
 
 @router.post(
-    "s/admin", #TODO: change to /admin after API spec is updated
+    "/users/admin", #TODO: change to /admin after API spec is updated
     response_description="Add new user",
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
@@ -62,7 +64,7 @@ async def add_new_user(
     return JSONResponse(status_code=status.HTTP_201_CREATED)
 
 @router.get(
-    "",
+    "/user",
     response_description="Read user by id.",
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
@@ -79,7 +81,7 @@ async def show_user(
         return await users_collection.find_one({"user_id": X_User_Id})
 
 @router.put(
-    "",
+    "/user",
     response_description="Update user by id.",
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
@@ -108,7 +110,7 @@ async def update_user(
     )
 
 @router.delete(
-    "", 
+    "/user", 
     response_description="Delete user by user id.",
     status_code=status.HTTP_200_OK
 )
@@ -130,3 +132,16 @@ async def delete_user(
     )
 
 
+#get dict of TILT spec from tilt/user_service_tilt.json an store to a json variable
+with open("user_service/tilt/user_service_tilt.json") as tilt_spec_file:
+    tilt_spec = json.load(tilt_spec_file)
+
+
+#Get endpoint for exposing TILT spec
+@router.get(
+    "/admin/tilt/user",
+    response_description="Get TILT spec",
+    status_code=status.HTTP_200_OK
+)
+async def get_tilt_spec():
+    return tilt_spec
