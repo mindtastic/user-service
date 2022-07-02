@@ -63,23 +63,19 @@ disclosed_data = tilt.DataDisclosedElement(
     recipients=[first_recipient]
 )
 
-
 tilt_dict = {}
 tilt_dict['dataDisclosed'] = [disclosed_data.to_dict()]
-
-with open('user_service_tilt.json', 'w') as fp:
-    json.dump(tilt_dict, fp, indent=4)
 
 #Add validator to check the tilt_dict
 # Load schema to validate against
 file = requests.get('https://raw.githubusercontent.com/Transparency-Information-Language/schema/master/tilt-schema.json')
 schema = json.loads(file.content)
 
-# Load instance/document to validate;
-# you may use your own tilt object with .to_dict() here
-f = open('user_service_tilt.json')
-instance = json.load(f)
+#As we don't use the full TILT spec, we only need the 'dataDisclosed' schema from the file
+examples_schema = schema['examples']
+dataDisclosed_schema = examples_schema[0]['dataDisclosed']
 # Compile schema
-validate_func = fastjsonschema.compile(schema)
+validate_func = fastjsonschema.compile(dataDisclosed_schema[0])
+
 # Validate instance against schema
-validate_func(instance)
+validate_func(tilt_dict)
