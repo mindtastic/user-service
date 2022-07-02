@@ -14,7 +14,7 @@ Get MongoDB credentials and add them to .env file.
 
 ## Local development
 
-We provide a `docker-compose.yml` for bringing up the service and a MongoDB database for local development. For a quickstart just run
+We provide a `docker-compose.yml` for bringing up the service and a MongoDB database for local development. For a quickstart you should have MONGO_INITDB_ROOT_USERNAME and MONGO_INITDB_ROOT_PASSWORD in your env file, and just run
 
 ```bash
 docker compose up
