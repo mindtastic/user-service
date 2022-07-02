@@ -138,7 +138,7 @@ with open("user_service/tilt/user_service_tilt.json") as tilt_spec_file:
 
 #Get endpoint for exposing TILT spec
 @router.get(
-    "/admin/tilt/user",
+    "/tilt/user",
     response_description="Get TILT spec",
     status_code=status.HTTP_200_OK
 )
