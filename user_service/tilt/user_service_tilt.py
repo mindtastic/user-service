@@ -65,5 +65,5 @@ data_disclosed=[first_disclosed_data.to_dict()]
 tilt_dict = {}
 tilt_dict['dataDisclosed'] = data_disclosed
 
-with open('user_service_tilt.json', 'w') as fp:
-    json.dump(tilt_dict, fp, indent=4)
+# with open('user_service_tilt.json', 'w') as fp:
+#     json.dump(tilt_dict, fp, indent=4)
