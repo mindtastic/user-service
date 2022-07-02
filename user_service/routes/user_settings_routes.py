@@ -17,7 +17,7 @@ from user_service.models.user_settings_model import (
 router = APIRouter()
 
 @router.get(
-    "/settings",
+    "/user/settings",
     response_description="Retrieve user settings by user id",
     response_model=UserSettingsResponse,
     status_code=status.HTTP_200_OK
@@ -55,7 +55,7 @@ async def get_user_settings_by_id(
 
 
 @router.post(
-    "/settings",
+    "/user/settings",
     response_description="Add user settings by user id",
     response_model=UserSettingsResponse
 )
@@ -92,7 +92,7 @@ async def create_user_settings(
 
 # Create DELETE endpoint for deleting user settings by user id
 @router.delete(
-    "/settings", 
+    "/user/settings", 
     response_description="Delete user settings by user id")
 async def delete_user_settings(
     X_User_Id: Union[UUID, None] = Header(default=None),
