@@ -52,7 +52,7 @@ first_recipient = tilt.Recipient(
 )
 
 #Data disclosed to user-service-tilt
-disclosed_data = tilt.DataDisclosedElement(
+first_disclosed_data = tilt.DataDisclosedElement(
     id='user-service-tilt-01',
     category="Language Preference",
     legal_bases=[first_legal_base, second_legal_base],
@@ -63,8 +63,10 @@ disclosed_data = tilt.DataDisclosedElement(
     recipients=[first_recipient]
 )
 
-tilt_dict = {}
-tilt_dict['dataDisclosed'] = disclosed_data.to_dict()
+data_disclosed=[first_disclosed_data.to_dict()]
 
-# with open('user_service_tilt.json', 'w') as fp:
-#     json.dump(tilt_dict, fp, indent=4)
+tilt_dict = {}
+tilt_dict['dataDisclosed'] = data_disclosed
+
+with open('user_service_tilt.json', 'w') as fp:
+    json.dump(tilt_dict, fp, indent=4)
