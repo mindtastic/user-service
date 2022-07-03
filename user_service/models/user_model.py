@@ -1,6 +1,6 @@
-from typing import Optional
+from typing import Optional, Dict
 from enum import Enum
-from pydantic import UUID4, BaseModel, Json
+from pydantic import UUID4, BaseModel
 from bson import ObjectId #check bson
 
 
@@ -16,7 +16,7 @@ class UserModel(BaseModel):
     user_id: Optional[UUID4]
     username: Optional[str]
     role: RoleEnum = RoleEnum.user
-    settings: Optional[Json]
+    settings: Dict[str, str]
 
 
     class Config:
@@ -36,7 +36,7 @@ class UserModel(BaseModel):
 class UserModelResponse(BaseModel):
     username: Optional[str]
     role: Optional[RoleEnum]
-    settings: Optional[Json]
+    settings: Dict[str, str]
 
     class Config:
         allow_population_by_field_name = True

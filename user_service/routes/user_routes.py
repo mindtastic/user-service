@@ -41,19 +41,21 @@ async def show_all_users(users_collection = Depends(get_mongo_collection(Service
 @router.post(
     "/admin/user",
     response_description="Add new user",
-    response_model=UserModelResponse,
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
 )
 async def add_new_user(
-    X_User_Id: Union[UUID, None] = Header(default=None), 
+    X_User_Id: Union[UUID, None] = Header(default=None),
     users_collection = Depends(get_mongo_collection(ServiceDBCollection.USERS)),
+    users_settings_collection = Depends(get_mongo_collection(ServiceDBCollection.SETTINGS)),
     user_data: UserModel = Body(...)):
     '''Creates a new user record'''
     user_data_dict = user_data.dict()
     user_data_dict.update({"user_id": X_User_Id})
-
+    user_settings_data_dict = user_data_dict.pop('settings')
+    user_settings_data_dict.update({"user_id": X_User_Id})
     try:
         await users_collection.insert_one(user_data_dict)
+        await users_settings_collection.insert_one(user_settings_data_dict)
     except ValidationError as error:
         logging.error("Error: %s", error)
         return HTTPException(
@@ -71,18 +73,36 @@ async def add_new_user(
 )
 async def show_user(
     X_User_Id: Union[UUID, None] = Header(default=None),
-    users_collection = Depends(get_mongo_collection(ServiceDBCollection.USERS))
+    users_collection = Depends(get_mongo_collection(ServiceDBCollection.USERS)),
+    users_settings_collection = Depends(get_mongo_collection(ServiceDBCollection.SETTINGS))
 ):
     #return user by id, if user is not found, create new user with empty Body
     if (user := await users_collection.find_one({"user_id": X_User_Id})) is not None:
+        # returns only the language from settings
+        # if we want to add more settings to be returned in the future
+        # add {"column": 1} to line 87
+        user_settings = await users_settings_collection.find_one(
+            {"user_id": X_User_Id},
+            {"lang": 1, "_id": False},
+        )
+        user.update({"settings": user_settings})
         return user
 
     await add_new_user(
-      X_User_Id=X_User_Id,
-      user_data=UserModel(**default_user_data),
-      users_collection=users_collection,
+        X_User_Id=X_User_Id,
+        user_data=UserModel(**default_user_data),
+        users_collection=users_collection,
+        users_settings_collection=users_settings_collection,
     )
-    return await users_collection.find_one({"user_id": X_User_Id})
+
+    # TODO: extract into method
+    new_user = await users_collection.find_one({"user_id": X_User_Id})
+    new_user_settings = await users_settings_collection.find_one(
+            {"user_id": X_User_Id},
+            {"lang": 1, "_id": False},
+        )
+    new_user.update({"settings": new_user_settings})
+    return new_user
 
 @router.put(
     "/user",
