@@ -20,10 +20,13 @@ router = APIRouter()
 default_user_data = {
     "username": "",
     "role": "user",
+    "settings": {
+      "lang": "de"
+    }
 }
 
 @router.get(
-    "/users/admin", #TODO: change to /admin after API spec is updated
+    "/admin/user",
     response_description="Get all users.",
     response_model=List[UserModelResponse],
     status_code=status.HTTP_200_OK
@@ -36,7 +39,7 @@ async def show_all_users(users_collection = Depends(get_mongo_collection(Service
     return users
 
 @router.post(
-    "/users/admin", #TODO: change to /admin after API spec is updated
+    "/admin/user",
     response_description="Add new user",
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
@@ -62,7 +65,7 @@ async def add_new_user(
 
 @router.get(
     "/user",
-    response_description="Read user by id.",
+    response_description="Get data of current user",
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
 )
@@ -73,13 +76,17 @@ async def show_user(
     #return user by id, if user is not found, create new user with empty Body
     if (user := await users_collection.find_one({"user_id": X_User_Id})) is not None:
         return user
-    else:
-        await add_new_user(X_User_Id=X_User_Id, user_data=UserModel(**default_user_data), users_collection=users_collection)
-        return await users_collection.find_one({"user_id": X_User_Id})
+
+    await add_new_user(
+      X_User_Id=X_User_Id,
+      user_data=UserModel(**default_user_data),
+      users_collection=users_collection,
+    )
+    return await users_collection.find_one({"user_id": X_User_Id})
 
 @router.put(
     "/user",
-    response_description="Update user by id.",
+    response_description="Update data of authenticated user",
     response_model=UserModelResponse,
     status_code=status.HTTP_200_OK
 )
