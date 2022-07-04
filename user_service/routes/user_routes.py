@@ -129,11 +129,17 @@ async def update_user(
     user_data: UpdateUserModel = Body(...)):
     '''Updates a single user record'''
     if (await users_collection.find_one({"user_id": X_User_Id})) is not None:
-        user_update_dict = user_data.dict(exclude_unset=True)
+        user_update = user_data.dict(exclude_unset=True, exclude={'settings'})
+        user_settings_update = user_data.dict(exclude_unset=True, include={'settings'})
         try:
-            await users_collection.update_one(
-                {"user_id": X_User_Id}, {"$set": user_update_dict}
-            )
+            if bool(user_update):
+                await users_collection.update_one(
+                    {"user_id": X_User_Id}, {"$set": user_update}
+                )
+            if bool(user_settings_update.get("settings")):
+                await users_collection.update_one(
+                    {"user_id": X_User_Id}, {"$set": user_settings_update}
+                )
         except ValidationError as error:
             logging.error("Error: %s", error)
             return HTTPException(

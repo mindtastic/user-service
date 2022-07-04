@@ -70,7 +70,20 @@ class UpdateUserModel(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "email": "user@example.com",
-                "role": "admin",
+                "username": "maja",
+                "role": "user",
+                "email": "maja@example.com",
+                "settings": {
+                  "lang": "de",
+                }
             }
         }
+
+    @validator('settings')
+    def check_language(cls, v):
+        '''Checks if language is of available language'''
+        if not v.get("lang"):
+            return v
+        if v.get("lang") in set(item.value for item in LanguageEnum):
+            return v
+        raise ValueError('Language is not available, must be "de" or "eng"')
