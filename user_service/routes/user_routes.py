@@ -25,6 +25,7 @@ default_user_data = {
     }
 }
 
+#Default user settings
 default_settings = {
     "settings": {
       "lang": "de"
@@ -108,7 +109,6 @@ async def show_user(
         users_settings_collection=users_settings_collection,
     )
 
-    # TODO: extract into method
     new_user = await users_collection.find_one({"user_id": X_User_Id})
     new_user_settings = await users_settings_collection.find_one(
             {"user_id": X_User_Id},
