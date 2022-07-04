@@ -31,10 +31,17 @@ default_user_data = {
     response_model=List[UserModelResponse],
     status_code=status.HTTP_200_OK
 )
-async def show_all_users(users_collection = Depends(get_mongo_collection(ServiceDBCollection.USERS))):
+async def show_all_users(
+    users_collection = Depends(get_mongo_collection(ServiceDBCollection.USERS)),
+    users_settings_collection = Depends(get_mongo_collection(ServiceDBCollection.SETTINGS))):
     '''Returns a status code and a list of all users'''
     users = []
     async for user in users_collection.find():
+        user_settings = await users_settings_collection.find_one(
+            {"user_id": user["user_id"]},
+            {"lang": 1, "_id": False},
+        )
+        user.update({"settings": user_settings})
         users.append(user)
     return users
 
@@ -51,7 +58,7 @@ async def add_new_user(
     '''Creates a new user record'''
     user_data_dict = user_data.dict()
     user_data_dict.update({"user_id": X_User_Id})
-    user_settings_data_dict = user_data_dict.pop('settings')
+    user_settings_data_dict = user_data_dict.pop('settings') or {"settings": {}}
     user_settings_data_dict.update({"user_id": X_User_Id})
     try:
         await users_collection.insert_one(user_data_dict)
@@ -134,7 +141,7 @@ async def update_user(
     )
 
 @router.delete(
-    "/user", 
+    "/user",
     response_description="Delete user by user id.",
     status_code=status.HTTP_200_OK
 )
