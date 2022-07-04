@@ -2,7 +2,6 @@ from typing import List, Union
 from uuid import UUID
 from user_service.routes.dependencies import get_mongo_collection, ServiceDBCollection
 from fastapi import APIRouter, Body, HTTPException, status, Header, Depends
-from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from jsonschema import ValidationError
 import logging
