@@ -129,10 +129,10 @@ async def update_user(
     user_data: UpdateUserModel = Body(...)):
     '''Updates a single user record'''
     if (await users_collection.find_one({"user_id": X_User_Id})) is not None:
-        user_data = jsonable_encoder(user_data)
+        user_update_dict = user_data.dict(exclude_unset=True)
         try:
             await users_collection.update_one(
-                {"user_id": X_User_Id}, {"$set": user_data}
+                {"user_id": X_User_Id}, {"$set": user_update_dict}
             )
         except ValidationError as error:
             logging.error("Error: %s", error)
