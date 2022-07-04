@@ -21,6 +21,7 @@ class UserModel(BaseModel):
 
     @validator('settings', pre=True)
     def add_default_lang(cls, v):
+        '''Adds default language if none given'''
         if "lang" not in v.keys():
             return {"lang": LanguageEnum.de}
         return v
@@ -43,7 +44,7 @@ class UserModelResponse(BaseModel):
     username: Optional[str]
     email: Optional[EmailStr]
     role: Optional[RoleEnum]
-    settings: Dict[str, str]
+    settings: Optional[Dict[str, str]]
 
     class Config:
         allow_population_by_field_name = True
@@ -62,7 +63,9 @@ class UserModelResponse(BaseModel):
 
 class UpdateUserModel(BaseModel):
     username: Optional[str]
+    email: Optional[EmailStr]
     role: Optional[RoleEnum]
+    settings: Optional[Dict[str, str]]
 
     class Config:
         schema_extra = {

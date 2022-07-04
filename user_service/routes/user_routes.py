@@ -25,6 +25,12 @@ default_user_data = {
     }
 }
 
+default_settings = {
+    "settings": {
+      "lang": "de"
+    }
+}
+
 @router.get(
     "/admin/user",
     response_description="Get all users.",
@@ -58,7 +64,7 @@ async def add_new_user(
     '''Creates a new user record'''
     user_data_dict = user_data.dict()
     user_data_dict.update({"user_id": X_User_Id})
-    user_settings_data_dict = user_data_dict.pop('settings') or {"settings": {}}
+    user_settings_data_dict = user_data_dict.pop('settings') or default_settings
     user_settings_data_dict.update({"user_id": X_User_Id})
     try:
         await users_collection.insert_one(user_data_dict)
@@ -161,9 +167,6 @@ async def delete_user(
         status_code=status.HTTP_404_NOT_FOUND,
         detail=f"User {X_User_Id} not found",
     )
-
-
-
 
 #Get endpoint for exposing TILT spec, return tilt_dict from user_service/tilt/user_service_tilt.py file
 @router.get(
