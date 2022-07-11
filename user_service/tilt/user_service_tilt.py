@@ -26,7 +26,7 @@ storage = tilt.StorageElement(
     )
 
 legitimate_interests = tilt.AnyOfSchemaForLegitimateInterests(
-    exists=False,
+    exists=True,
     reasoning="No legitimate interests"
 )
 
@@ -37,8 +37,13 @@ non_disclosure = tilt.NonDisclosure(
     consequences="If the data is not disclosed, the shipment cannot be delivered."
 )
 
-purposes = tilt.AnyOfSchemaForThePurposes( 
-    purpose="To provide the user-service-tilt",
+purposes1 = tilt.AnyOfSchemaForThePurposes( 
+    purpose="To store the user's preferences and notification settings",
+    description="To provide the user-service-tilt"
+)
+
+purposes2 = tilt.AnyOfSchemaForThePurposes( 
+    purpose="Sending push notifications with information",
     description="To provide the user-service-tilt"
 )
 
@@ -59,7 +64,7 @@ disclosed_data = tilt.DataDisclosedElement(
     storage=[storage],
     legitimate_interests=[legitimate_interests],
     non_disclosure=non_disclosure,
-    purposes=[purposes],
+    purposes=[purposes1, purposes2],
     recipients=[first_recipient]
 )
 
